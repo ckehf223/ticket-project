@@ -37,25 +37,25 @@ public class Main {
 		int numberSelection = 0;
 		boolean exitFlag = false;
 
-		try {
-			customerList = customerRoading();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			performanceList = performanceRoading();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			cartList = cartRoading();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		while (!exitFlag) {
+			try {
+				customerList = customerRoading();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				performanceList = performanceRoading();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				cartList = cartRoading();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			numberSelection = firstScreen();
-			if (numberSelection == 3) {
+			if (numberSelection == 4) {
 				exitFlag = true;
 				continue;
 			}
@@ -64,7 +64,7 @@ public class Main {
 			switch (numberSelection) {
 			case 1:
 				customer = loginCheck(customerList);
-				if(!(customer.getId()==null)) {
+				if(!(customer.getId()== null)) {
 					if (customer.getId().equals(admin.getAdminID()) && customer.getPassword() == admin.getAdminPW()) {
 						adminMenu(customerList);
 						continue;
@@ -81,37 +81,37 @@ public class Main {
 								customerSelection = customerMenu();
 								switch (customerSelection) {
 								case 1:
-									myInformation();
+									myInformation();			//고객 정보 확인
 									break;
 								case 2:
-									searchPerformance();
+									searchPerformance();		//공연 정보 보기
 									break;
 								case 3:
-									performanceReservation();
+									performanceReservation();	//공연 예매
 									break;
 								case 4:
-									printCartItem();
+									printCartItem();			//예매내역 보기
 									break;
 								case 5:
-									cartRemoveItem();
+									cartRemoveItem();			//예매내역 항목 삭제
 									break;
 								case 6:
-									deleteAllCartItem();
+									deleteAllCartItem();		//예매내역 전체 삭제
 									break;
 								case 7:
-									cartPaying();
+									cartPaying();				//결제하기
 									break;
 								case 8:
-									printPaymentList();
+									printPaymentList();			//결제내역 보기
 									break;
 								case 9:
-									savePerformanceList(performanceList);
-									cartLastSave(cart, cartList);
-									flag = true;
+									savePerformanceList(performanceList);	//공연저장
+									cartLastSave(cart, cartList);			//카트 저장
+									flag = true;							//종료
 									break;
 								case 10:
-									serviceList = serviceRoading();
-									conectService(serviceList);
+									serviceList = serviceRoading();			//자주하는 질문 로딩
+									conectService(serviceList);				//고객센터 연결
 									break;
 								}// end of switch
 								
@@ -125,7 +125,10 @@ public class Main {
 				}
 				break;
 			case 2:
-				joinMemberShip(customerList);
+				joinMemberShip(customerList);		//회원가입
+				break;
+			case 3: 
+				findCustomerInfo(customerList);		//ID PW 찾기
 				break;
 			}
 			}catch(Exception e) {
@@ -137,7 +140,6 @@ public class Main {
 
 
 
-
 	// 로그인 or 회원가입
 	public static int firstScreen() {
 		String regExp = "^[0-9]+$";
@@ -146,16 +148,16 @@ public class Main {
 		int num = 0;
 		while (!flag) {
 			System.out.println("*******************************************");
-			System.out.println("* 1.로그인       2.회원가입        3.종료       *");
+			System.out.println("* 1.로그인   2.회원가입  3.ID/PW 찾기  4.종료    *");
 			System.out.println("*******************************************");
 			System.out.print("번호를 입력하세요: ");
 			strNum = sc.nextLine();
 			if (strNum.matches(regExp)) {
 				num = Integer.parseInt(strNum);
-				if (num > 0 && num <= 3) {
+				if (num > 0 && num <= 4) {
 					flag = true;
 				} else {
-					System.out.println("1~3까지 입력하세요!");
+					System.out.println("1~4까지 입력하세요!");
 				}
 			} else {
 				System.out.println("잘못입력하셨습니다. ");
@@ -468,8 +470,6 @@ public class Main {
 			if (list.get(i).getId().equals(customer.getId()) && list.get(i).getPw() == customer.getPassword()) {
 				list.get(i).setList(cart.getList());
 				list.get(i).setPaymentItemList(cart.getPaymentItemList());
-				list.get(i).setId(cart.getId());
-				list.get(i).setPw(cart.getPw());
 				saveCartList(list);
 			}
 		} // end of for
@@ -567,7 +567,7 @@ public class Main {
 						break;
 					}
 				} else {
-					System.out.println("1~4까지 입력하세요!");
+					System.out.println("1~5까지 입력하세요!");
 				}
 			} else {
 				System.out.println("잘못입력하셨습니다. ");
@@ -583,12 +583,13 @@ public class Main {
 
 		for (Performance data : pList) {
 			if (data.getName().equals(name)) {
-				System.out.print(data.getPerformanceID() + " | ");
-				System.out.print(data.getGenre() + " | ");
-				System.out.print(data.getName() + " | ");
+				System.out.println("공연ID| 공연타입 | 공연명 |  공연장소  |  공연일  |관람연령|  가 격  |  좌 석  | ");
+				System.out.print(" "+data.getPerformanceID() + "  | ");
+				System.out.print(data.getGenre() + "  | ");
+				System.out.print(data.getName() + "  | ");
 				System.out.print(data.getVenue() + " | ");
-				System.out.print(data.getDayOfPerformance() + " | ");
-				System.out.print(data.getLimitAge() + " | ");
+				System.out.print(data.getDayOfPerformance() + " |  ");
+				System.out.print(data.getLimitAge() + " 세| ");
 				System.out.print(data.getTicketPrice() + " | ");
 				System.out.print(data.getSoldSeats() + "/" + data.getTotalSeats() + " | ");
 				System.out.println();
@@ -992,7 +993,31 @@ public class Main {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("고객센터를 닫았습니다.");
+		System.out.println("고객센터를 종료합니다.");
 	}//end of conectService
+	
+	
+	//ID/PW 찾기
+	public static void findCustomerInfo(ArrayList<Customer> list) {
+		boolean flag = false;
+		System.out.println("***********ID/PW 찾기************");
+		System.out.print("이름: ");
+		String name = sc.nextLine();
+		System.out.print("전화번호: ");
+		String phone = sc.nextLine();
+		
+		for(int i=0;i<list.size();i++) {
+			if(list.get(i).getName().equals(name) && list.get(i).getPhone().equals(phone)) {
+				System.out.println("이름:"+list.get(i).getName()+" 전화번호:"+list.get(i).getPhone());
+				System.out.println("ID: "+list.get(i).getId());
+				System.out.println("PW: "+list.get(i).getPassword());
+				flag = true;
+				break;
+			}
+		}
+		if(!flag) {
+			System.out.println("입력하신 회원이 없습니다.");
+		}
+	}//end of findCustomerInfo
 
 }// end of class

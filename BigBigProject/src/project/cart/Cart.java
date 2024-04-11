@@ -9,6 +9,8 @@ import project.member.VIPCustomer;
 import project.performance.Performance;
 
 public class Cart implements CartInterface,Serializable{
+	public static final int VIP_CUT = 800_000;
+	public static final int GOLD_CUT = 400_000;
 	private ArrayList<CartItem> list = new ArrayList<>();
 	private ArrayList<CartItem> paymentItemList = new ArrayList<>();//장바구니 결제 후 넘길 리스트, 영수증
 	private String id;
@@ -43,14 +45,15 @@ public class Cart implements CartInterface,Serializable{
 	
 	@Override
 	public  void printPerformanceList(ArrayList<Performance> pList) {
+		System.out.println("공연ID| 공연타입 | 공연명 |  공연장소  |  공연일  |관람연령|  가 격  |  좌 석  | ");
 		for(int i=0;i<pList.size();i++) {
 			Performance performance = pList.get(i);
-			System.out.print(performance.getPerformanceID()+" | ");
+			System.out.print("  "+performance.getPerformanceID()+" | ");
 			System.out.print(performance.getGenre()+" | ");
 			System.out.print(performance.getName()+" | ");
 			System.out.print(performance.getVenue()+" | ");
 			System.out.print(performance.getDayOfPerformance()+" | ");
-			System.out.print(performance.getLimitAge()+" | ");
+			System.out.print(performance.getLimitAge()+"세 | ");
 			System.out.print(performance.getTicketPrice()+" | ");
 			System.out.print(performance.getSoldSeats()+"/"+performance.getTotalSeats()+" | ");
 			System.out.println();
@@ -82,14 +85,11 @@ public class Cart implements CartInterface,Serializable{
 		int x = 0;
 		int y = 0;
 		String dstr = list.get(numId).getSeatNum();
-		System.out.println(dstr);
 		String[] str = dstr.split(",");
 		for(int i=0;i<str.length;i++) {
 			String s = str[i].substring(1);
 			x = (str[i].charAt(0))-65;
 			y = (Integer.parseInt(s))-1;
-			System.out.println(x);
-			System.out.println(y);
 			list.get(numId).getItem().getSeat()[x][y] = "□";
 		}
 		list.remove(numId);
@@ -129,13 +129,13 @@ public class Cart implements CartInterface,Serializable{
 	
 	public void printCart() {
 		System.out.println("예매내역 보기 ");
-		System.out.println("----------------------------------------------------.-----");
-		System.out.println("   공연ID  |  공연명  |  공연일     |  장소     |  좌석 번호 |  수량 |  합계");
+		System.out.println("---------------------------------------------------------");
+		System.out.println(" 공연ID|  공연명  |   공연일   |    장소   |  좌석번호 |  수량 |  합계");
 		
 		for (int i = 0; i < list.size(); i++) {
-			System.out.print("  " + list.get(i).getPerformanceID()+ " |");
-			System.out.print("  " + list.get(i).getPerformanceName()+ " |");
-			System.out.print("  " + list.get(i).getPerformanceDay()+ "     |");
+			System.out.print("   " + list.get(i).getPerformanceID()+ " |");
+			System.out.print(" " + list.get(i).getPerformanceName()+ " |");
+			System.out.print("  " + list.get(i).getPerformanceDay()+ "  |");
 			System.out.print("  " + list.get(i).getPerformanceVenue()+ " |");
 			System.out.print("  " + list.get(i).getSeatNum() + " |");
 			System.out.print("  " + list.get(i).getQuantity() + " |");
@@ -148,12 +148,12 @@ public class Cart implements CartInterface,Serializable{
 	public void printPaymentCart() {
 		System.out.println("결제내역  보기 ");
 		System.out.println("---------------------------------------------------------");
-		System.out.println("  공연ID |  공연명 |  공연일     |  장소 |  좌석 번호 |  수량");
+		System.out.println("공연ID |  공연명  |   공연일    |   장소   |  좌석 번호 |  수량");
 		
 		for (int i = 0; i < paymentItemList.size(); i++) {
 			System.out.print("  " + paymentItemList.get(i).getPerformanceID()+ " |");
 			System.out.print("  " + paymentItemList.get(i).getPerformanceName()+ " |");
-			System.out.print("  " + paymentItemList.get(i).getPerformanceDay()+ "     |");
+			System.out.print("  " + paymentItemList.get(i).getPerformanceDay()+ "   |");
 			System.out.print("  " + paymentItemList.get(i).getPerformanceVenue()+ " |");
 			System.out.print("  " + paymentItemList.get(i).getSeatNum() + " |");
 			System.out.print("  " + paymentItemList.get(i).getQuantity());
@@ -168,12 +168,12 @@ public class Cart implements CartInterface,Serializable{
 	//자동 승급 기능
 	public  ArrayList<Customer> changeCutomer(ArrayList<Customer> list , Customer cus){
 		boolean flag = false;
-		if(cus.getAccumulatedPayment() > 400_000 && cus.getAccumulatedPayment() < 800_000) {
+		if(cus.getAccumulatedPayment() > GOLD_CUT && cus.getAccumulatedPayment() < VIP_CUT) {
 			GoldCustomer g = new GoldCustomer(cus);
 			list.add(g);
 			flag = true;
 		}
-		if(cus.getAccumulatedPayment() >800_000) {
+		if(cus.getAccumulatedPayment() >VIP_CUT) {
 			VIPCustomer v = new VIPCustomer(cus);
 			list.add(v);
 			flag = true;

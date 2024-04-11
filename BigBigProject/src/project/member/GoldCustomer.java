@@ -3,20 +3,15 @@ package project.member;
 import java.io.Serializable;
 
 public class GoldCustomer extends Customer implements Serializable{
-
+	private double saleRatio; //할인율
+	private double mileageSale; //적립율
 	
 	public GoldCustomer() {
-		
+		this.saleRatio = 0.05;
+		this.mileageSale = 0.06;
+		this.setGrade("GOLD");
 	}
-
-	public GoldCustomer(String name, int age, String phone, String address, String id, int password) {
-		super(name, age, phone, address, id, password);
-	}
-
-	public GoldCustomer(String id, int password) {
-		super(id, password);
-	}
-
+	
 	public GoldCustomer(Customer cus) {
 		this.setName(cus.getName());
 		this.setAge(cus.getAge());
@@ -27,10 +22,24 @@ public class GoldCustomer extends Customer implements Serializable{
 		this.setAccumulatedPayment(cus.getAccumulatedPayment());
 		this.setMileage(cus.getMileage());
 		this.setGrade("GOLD");
-		this.setSaleRatio(0.05);
-		this.setMileageSale(0.06);
+		this.saleRatio = 0.05;
+		this.mileageSale = 0.06;
 	}
-	
+
+	public double getSaleRatio() {
+		return saleRatio;
+	}
+	public void setSaleRatio(double saleRatio) {
+		this.saleRatio = saleRatio;
+	}
+
+	public double getMileageSale() {
+		return mileageSale;
+	}
+
+	public void setMileageSale(double mileageSale) {
+		this.mileageSale = mileageSale;
+	}
 	
 	
 	

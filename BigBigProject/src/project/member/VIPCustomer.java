@@ -4,11 +4,13 @@ import java.io.Serializable;
 
 public class VIPCustomer extends Customer implements Serializable{
 	private double saleRatio;//할인율
+	private double mileageSale; //적립율
 	
-	
+
 	public VIPCustomer() {
 		this.setGrade("VIP");
-		this.setMileageSale(0.08);
+		this.mileageSale = 0.08;
+		this.saleRatio = 0.1;
 	}
 
 	public VIPCustomer(Customer cus) {
@@ -22,7 +24,7 @@ public class VIPCustomer extends Customer implements Serializable{
 		this.setMileage(cus.getMileage());
 		this.setGrade("VIP");
 		this.saleRatio = 0.1;
-		this.setMileageSale(0.08);
+		this.mileageSale = 0.08;
 	}
 	
 	public double getSaleRatio() {
@@ -31,6 +33,14 @@ public class VIPCustomer extends Customer implements Serializable{
 
 	public void setSaleRatio(double saleRatio) {
 		this.saleRatio = saleRatio;
+	}
+
+	public double getMileageSale() {
+		return mileageSale;
+	}
+
+	public void setMileageSale(double mileageSale) {
+		this.mileageSale = mileageSale;
 	}
 	
 	
