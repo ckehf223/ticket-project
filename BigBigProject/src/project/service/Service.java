@@ -2,10 +2,7 @@ package project.service;
 
 import java.io.Serializable;
 
-import project.performance.Performance;
-
 public class Service implements Serializable{
-	private Performance p ;
 	private String category;
 	private String serviceHead;
 	private String contend;

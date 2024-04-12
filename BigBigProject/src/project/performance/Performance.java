@@ -11,7 +11,7 @@ public class Performance implements Serializable,Comparable<Performance>{
 	private String venue; // 장소
 	private int limitAge;	//관람제한연령
 	private String totalSeats; // 총좌석수
-	private String[][] seat; //좌석지정
+	private int[][] seat; //좌석지정
 	private int soldSeats; // 판매좌석수
 	private int ticketPrice; // 티켓가격,compare
 	
@@ -92,11 +92,11 @@ public class Performance implements Serializable,Comparable<Performance>{
 		makeSeatsArray();
 	}
 
-	public String[][] getSeat() {
+	public int[][] getSeat() {
 		return seat;
 	}
 
-	public void setSeat(String[][] seat) {
+	public void setSeat(int[][] seat) {
 		this.seat = seat;
 		makeSeatsArray();
 	}
@@ -118,13 +118,27 @@ public class Performance implements Serializable,Comparable<Performance>{
 		this.ticketPrice = ticketPrice;
 	}
 	public void makeSeatsArray() {
-		String[] seat = {this.totalSeats};
-		int a = (seat[0].charAt(0))-48;
-		int b = ((seat[0].charAt(1))-47)*10;
-		String[][] s= new String[a][b];
+		String seat = this.totalSeats;
+		int a = 0;
+		int b =0;
+//		String str = seat.substring(1);
+//		a = (seat.charAt(0))-48;
+		if(seat.length() == 1) {
+			a =0;
+			b = Integer.parseInt(seat);
+		}
+		if(seat.length() == 2) {
+			a = seat.charAt(0)-48;
+			b = (Integer.parseInt(seat.substring(1))+1)*10;
+		}
+		if(seat.length() == 3) {
+			a = Integer.parseInt(seat.substring(0,2));
+			b = (Integer.parseInt(seat.substring(2))+1)*10;
+		}
+		int[][] s= new int[a][b];
 		for(int i=0;i<s.length;i++) {
 			for(int j=0;j<s[i].length;j++) {
-				s[i][j] = "□";
+				s[i][j] = 0;
 			}
 		}
 		this.seat = s;

@@ -36,7 +36,13 @@ public class Cart implements CartInterface, Serializable {
 		for (int i = 0; i < p.getSeat().length; i++) {
 			System.out.print(" " + (char) (ch + i));
 			for (int j = 0; j < p.getSeat()[i].length; j++) {
-				System.out.print("    " + p.getSeat()[i][j]);
+				if(p.getSeat()[i][j] == 1) {
+					System.out.print("    "+"■");
+				}
+				if(p.getSeat()[i][j] == 0) {
+					System.out.print("    "+"□");
+				}
+//				System.out.print("    " + p.getSeat()[i][j]);
 			}
 			System.out.println("");
 			System.out.println("     ==================================================");
@@ -116,15 +122,12 @@ public class Cart implements CartInterface, Serializable {
 		int x = 0;
 		int y = 0;
 		String dstr = list.get(numId).getSeatNum();
-		System.out.println(dstr);
 		String[] str = dstr.split(",");
 		for (int i = 0; i < str.length; i++) {
 			String s = str[i].substring(1);
 			x = (str[i].charAt(0)) - 65;
 			y = (Integer.parseInt(s)) - 1;
-			System.out.println(x);
-			System.out.println(y);
-			list.get(numId).getItem().getSeat()[x][y] = "□";
+			list.get(numId).getItem().getSeat()[x][y] = 0;
 		}
 		list.remove(numId);
 	}
@@ -143,7 +146,7 @@ public class Cart implements CartInterface, Serializable {
 					String s = str[k].substring(1);
 					x = (str[k].charAt(0)) - 65;
 					y = (Integer.parseInt(s)) - 1;
-					list.get(i).getItem().getSeat()[x][y] = "□";
+					list.get(i).getItem().getSeat()[x][y] = 0;
 				}
 				for (int j = 0; j < list1.size(); j++) {
 					if (list.get(i).getItem().getPerformanceID().equals(list1.get(j).getPerformanceID())) {

@@ -760,13 +760,13 @@ public class Main {
 								String s1 = str1.substring(1);
 								x = (str2.charAt(0)) - 65;
 								y = (Integer.parseInt(s1)) - 1;
-								if (performanceList.get(id).getSeat()[x][y].equals("■")) {
+								if (performanceList.get(id).getSeat()[x][y] == 1) {
 									System.out.println("선택하신 좌석은 이미 예약되어 있습니다.");
 									System.out.println("다른 좌석을 선택해주세요!");
 									num += 1;
 									continue;
 								}
-								performanceList.get(id).getSeat()[x][y] = "■";
+								performanceList.get(id).getSeat()[x][y] = 1;
 								count++;
 								slist.add(str2);
 							} catch (Exception e) {
