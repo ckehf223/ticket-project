@@ -2,21 +2,29 @@ package project.member;
 
 import java.io.Serializable;
 
-public class Admin extends Customer implements Serializable{
+public class Admin implements Serializable{
 
-	private String adminID = "Admin";
-	private int adminPW = 99999;
+	private String adminID;
+	private int adminPW;
 	
 	public Admin() {
-		this.adminID = "Admin";
-		this.adminPW = 99999;
 		
+	}
+	public Admin(String adminID, int adminPW) {
+		this.adminID = adminID;
+		this.adminPW = adminPW;
 	}
 	public String getAdminID() {
 		return adminID;
 	}
 	public int getAdminPW() {
 		return adminPW;
+	}
+	public void setAdminID(String adminID) {
+		this.adminID = adminID;
+	}
+	public void setAdminPW(int adminPW) {
+		this.adminPW = adminPW;
 	}
 
 }

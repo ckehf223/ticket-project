@@ -22,7 +22,7 @@ public class ServerMain {
 
 	
 	//로딩 
-	public static ArrayList<Service> serviceRoading(){
+	public static ArrayList<Service> serviceLoading(){
 		ArrayList<Service> sList = null;
 		ObjectInputStream ois = null;
 		
@@ -56,7 +56,7 @@ public class ServerMain {
 			this.dis = new DataInputStream(cs.getInputStream());
 			this.dos = new DataOutputStream(cs.getOutputStream());
 			this.isActive = false;
-			this.list = serviceRoading();
+			this.list = serviceLoading();
 		}
 
 		@Override
@@ -64,6 +64,7 @@ public class ServerMain {
 			String message =null;
 			
 			while(!isActive) {
+				this.list = serviceLoading();
 				boolean flag1 = false;
 				try {
 					this.dos.writeUTF("키워드를 입력하세요!: ");
@@ -74,8 +75,9 @@ public class ServerMain {
 					}else {
 						int count =1;
 						for(int i=0;i<list.size();i++) {
-							if(list.get(i).getCategory().contentEquals(message)) {
-									this.dos.writeUTF(count+"."+list.get(i).getServiceHead());
+							if(list.get(i).getCategory().contains(message)) {
+								list.get(i).setServiceHead(count+"."+list.get(i).getServiceHead());
+									this.dos.writeUTF(list.get(i).getServiceHead());
 									count++;
 									flag1 = true;
 							}
@@ -84,19 +86,20 @@ public class ServerMain {
 							this.dos.writeUTF("찾으시는 키워드가 없습니다.");
 							this.dos.writeUTF("..");
 							continue;
-						}
-						message = this.dis.readUTF();
-						for(int i=0;i<list.size();i++) {
-							if(list.get(i).getServiceHead().equals(message)) {
-								this.dos.writeUTF("답변: "+list.get(i).getContend());
-								
-								break;
+						}else {
+							this.dos.writeUTF("..");
+							message = this.dis.readUTF();
+							for(int i=0;i<list.size();i++) {
+								if(list.get(i).getServiceHead().contains(message)) {
+									this.dos.writeUTF("질문: "+list.get(i).getServiceHead().substring(2));
+									this.dos.writeUTF("답변: "+list.get(i).getContend());
+									break;
+								}
 							}
-						}
-						
-						message = this.dis.readUTF();
-						if(message.equals("N")) {
-							isActive = true;
+							message = this.dis.readUTF();
+							if(message.equals("N")) {
+								isActive = true;
+							}
 						}
 						
 						if(!flag1) {

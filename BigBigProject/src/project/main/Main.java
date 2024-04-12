@@ -2,19 +2,24 @@ package project.main;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.DataInput;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Scanner;
 
 import project.cart.Cart;
@@ -37,20 +42,24 @@ public class Main {
 		int numberSelection = 0;
 		boolean exitFlag = false;
 
-
 		while (!exitFlag) {
 			try {
-				customerList = customerRoading();
+				adminLoading();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			try {
-				performanceList = performanceRoading();
+				customerList = customerLoading();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			try {
-				cartList = cartRoading();
+				performanceList = performanceLoading();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				cartList = cartLoading();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -60,85 +69,84 @@ public class Main {
 				continue;
 			}
 			try {
-				
-			switch (numberSelection) {
-			case 1:
-				customer = loginCheck(customerList);
-				if(!(customer.getId()== null)) {
-					if (customer.getId().equals(admin.getAdminID()) && customer.getPassword() == admin.getAdminPW()) {
-						adminMenu(customerList);
-						continue;
-					} else {
-						try {
-							cart = cartCheck();
-						} catch (Exception e) {
-							System.out.println("카트 체크 오류");
-						}
-						boolean flag = false;
-						int customerSelection = 0;
-						while (!flag) {
+
+				switch (numberSelection) {
+				case 1:
+					customer = loginCheck(customerList);
+					if (!(customer.getId() == null)) {
+						if (customer.getId().equals(admin.getAdminID())
+								&& customer.getPassword() == admin.getAdminPW()) {
+							adminMenu(customerList);
+							continue;
+						} else {
 							try {
-								customerSelection = customerMenu();
-								switch (customerSelection) {
-								case 1:
-									myInformation();			//고객 정보 확인
-									break;
-								case 2:
-									searchPerformance();		//공연 정보 보기
-									break;
-								case 3:
-									performanceReservation();	//공연 예매
-									break;
-								case 4:
-									printCartItem();			//예매내역 보기
-									break;
-								case 5:
-									cartRemoveItem();			//예매내역 항목 삭제
-									break;
-								case 6:
-									deleteAllCartItem();		//예매내역 전체 삭제
-									break;
-								case 7:
-									cartPaying();				//결제하기
-									break;
-								case 8:
-									printPaymentList();			//결제내역 보기
-									break;
-								case 9:
-									savePerformanceList(performanceList);	//공연저장
-									cartLastSave(cart, cartList);			//카트 저장
-									flag = true;							//종료
-									break;
-								case 10:
-									serviceList = serviceRoading();			//자주하는 질문 로딩
-									conectService(serviceList);				//고객센터 연결
-									break;
-								}// end of switch
-								
+								cart = cartCheck();
 							} catch (Exception e) {
-								System.out.println("잘못된 선택하셨습니다.");
-								e.printStackTrace();
-							} // end of try-catch
-						} // end of while
-					} // end of else
-					
+								System.out.println("카트 체크 오류");
+							}
+							boolean flag = false;
+							int customerSelection = 0;
+							while (!flag) {
+								try {
+									customerSelection = customerMenu();
+									switch (customerSelection) {
+									case 1:
+										myInformation(); // 고객 정보 확인
+										break;
+									case 2:
+										searchPerformance(); // 공연 정보 보기
+										break;
+									case 3:
+										performanceReservation(); // 공연 예매
+										break;
+									case 4:
+										printCartItem(); // 예매내역 보기
+										break;
+									case 5:
+										cartRemoveItem(); // 예매내역 항목 삭제
+										break;
+									case 6:
+										deleteAllCartItem(); // 예매내역 전체 삭제
+										break;
+									case 7:
+										cartPaying(); // 결제하기
+										break;
+									case 8:
+										printPaymentList(); // 결제내역 보기
+										break;
+									case 9:
+										savePerformanceList(performanceList); // 공연저장
+										cartLastSave(cart, cartList); // 카트 저장
+										flag = true; // 종료
+										break;
+									case 10:
+										serviceList = serviceLoading(); // 자주하는 질문 로딩
+										connectService(serviceList); // 고객센터 연결
+										break;
+									}// end of switch
+
+								} catch (Exception e) {
+									System.out.println("잘못된 선택하셨습니다.");
+									e.printStackTrace();
+								} // end of try-catch
+							} // end of while
+						} // end of else
+
+					}
+					break;
+				case 2:
+					joinMemberShip(customerList); // 회원가입
+					break;
+				case 3:
+					findCustomerInfo(customerList); // ID PW 찾기
+					break;
 				}
-				break;
-			case 2:
-				joinMemberShip(customerList);		//회원가입
-				break;
-			case 3: 
-				findCustomerInfo(customerList);		//ID PW 찾기
-				break;
-			}
-			}catch(Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} // end of while
 		System.out.println("The end");
 	}// end of main
-
-
 
 	// 로그인 or 회원가입
 	public static int firstScreen() {
@@ -147,9 +155,9 @@ public class Main {
 		boolean flag = false;
 		int num = 0;
 		while (!flag) {
-			System.out.println("*******************************************");
-			System.out.println("* 1.로그인   2.회원가입  3.ID/PW 찾기  4.종료    *");
-			System.out.println("*******************************************");
+			System.out.println("┌─────────────────────────────────────────┐");
+			System.out.println("│ 1.로그인   2.회원가입  3.ID/PW 찾기   4.종료   │");
+			System.out.println("└─────────────────────────────────────────┘");
 			System.out.print("번호를 입력하세요: ");
 			strNum = sc.nextLine();
 			if (strNum.matches(regExp)) {
@@ -168,11 +176,12 @@ public class Main {
 
 	// 로그인
 	public static Customer loginCheck(ArrayList<Customer> list) {
-		Admin admin = new Admin();
 		boolean flag = false;
-		Customer cus = new Customer();;
-
-		System.out.println("************* 로 그 인 ***********");
+		Customer cus = new Customer();
+		;
+		System.out.println("*********************");
+		System.out.println("*    로   그   인     *");
+		System.out.println("*********************");
 		System.out.print("아이디를 입력하세요 : ");
 		String ID = sc.nextLine();
 		System.out.print("비밀번호를 입력하세요 : ");
@@ -202,17 +211,19 @@ public class Main {
 	// 회원가입
 	public static void joinMemberShip(ArrayList<Customer> list) {
 		boolean flag = false;
-		System.out.println("************* 회원 가입 ***********");
+		System.out.println("****************************");
+		System.out.println("*      회  원  가  입        *");
+		System.out.println("****************************");
 		System.out.print("아이디를 입력하세요: ");
 		String ID = sc.nextLine();
-		for(int i=0;i<list.size();i++){
-			if(list.get(i).getId().equals(ID)) {
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).getId().equals(ID)) {
 				System.out.println("중복된 아이디가 존재합니다 다시입력해주세요! ");
 				flag = false;
 				break;
 			}
 		}
-		if(!flag) {
+		if (!flag) {
 			System.out.print("비밀번호를 입력하세요(4자리 숫자만 입력) : ");
 			String pin = sc.nextLine();
 			System.out.print("이름을 입력하세요: ");
@@ -252,7 +263,7 @@ public class Main {
 	}// end of saveCustomerList
 
 	// customer 정보 로딩
-	public static ArrayList<Customer> customerRoading() {
+	public static ArrayList<Customer> customerLoading() {
 		ArrayList<Customer> list = null;
 		ObjectInputStream ois = null;
 		try {
@@ -281,14 +292,16 @@ public class Main {
 		boolean flag = false;
 		int num = 0;
 		while (!flag) {
-			System.out.println("*********************************************************");
-			System.out.println("1.모든 회원정보 출력 2.회원 삭제 3.공연 추가 4.공연 정보 출력 5.로그아웃");
-			System.out.println("*********************************************************");
-			System.out.print("번호를 입력하세요: ");
+			System.out.println("***************************************");
+			System.out.println("* 1.회원 정보 출력    * 4.공연 정보 출력       ");
+			System.out.println("* 2.회원 삭제        * 5.공연 삭제          ");
+			System.out.println("* 3.공연 추가        * 6.로그아웃           ");
+			System.out.println("***************************************");
+			System.out.print("**번호를 입력하세요: ");
 			strNum = sc.nextLine();
 			if (strNum.matches(regExp)) {
 				num = Integer.parseInt(strNum);
-				if (num > 0 && num <= 5) {
+				if (num > 0 && num <= 6) {
 					switch (num) {
 					case 1:
 						list.forEach(value -> System.out.println(value));
@@ -300,18 +313,21 @@ public class Main {
 						insertPerformance(performanceList);
 						break;
 					case 4:
-						if(performanceList.size()==0) {
+						if (performanceList.size() == 0) {
 							System.out.println("등록된 공연 정보가 없습니다.");
-						}else {
+						} else {
 							cart.printPerformanceList(performanceList);
 						}
 						break;
 					case 5:
+						deletePerformance(performanceList);
+						break;
+					case 6:
 						flag = true;
 						break;
 					}
 				} else {
-					System.out.println("1~5까지 입력하세요!");
+					System.out.println("1~6까지 입력하세요!");
 				}
 			} else {
 				System.out.println("잘못입력하셨습니다. ");
@@ -338,8 +354,8 @@ public class Main {
 				}
 			}
 		} // end of for
-		for(int i=0;i<cartList.size();i++) {
-			if(cartList.get(i).getId().equals(ID)) {
+		for (int i = 0; i < cartList.size(); i++) {
+			if (cartList.get(i).getId().equals(ID)) {
 				cartList.remove(i);
 				saveCartList(cartList);
 			}
@@ -352,36 +368,55 @@ public class Main {
 
 	// 공연 정보 추가
 	private static void insertPerformance(ArrayList<Performance> list) {
+		Date date = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyMMddhhmmss");
+		String strDate = "P" + formatter.format(date);
+		
+		System.out.print("공연ID: "+strDate);
+		System.out.println();
+		System.out.print("공연명: ");
+		String name = sc.nextLine();
+		System.out.print("장르: ");
+		String genre = sc.nextLine();
+		System.out.print("공연일: ");
+		String day = sc.nextLine();
+		System.out.print("장소: ");
+		String venue = sc.nextLine();
+		System.out.print("관람연령(숫자): ");
+		String limitAge = sc.nextLine();
+		System.out.print("좌석수(숫자): ");
+		String seats = sc.nextLine();
+		System.out.print("가격(숫자): ");
+		String price = sc.nextLine();
+
+		list.add(new Performance(strDate, name, genre, day, venue, Integer.parseInt(limitAge), seats,
+				Integer.parseInt(price)));
+		savePerformanceList(list);
+
+	}// end of insertPerformance
+
+	// 공연 정보 삭제
+	public static void deletePerformance(ArrayList<Performance> list) {
 		boolean flag = false;
-		System.out.print("공연ID : ");
+		System.out.print("삭제하실 공연ID를 입력하세요: ");
 		String id = sc.nextLine();
-		for(int i=0;i<list.size();i++) {
-			if(list.get(i).getPerformanceID().equals(id)) {
-				System.out.println("이미 존재하는 공연ID입니다.");
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).getPerformanceID().equals(id)) {
+				cart.printPerformance(list.get(i));
 				flag = true;
+				System.out.println("정말 삭제하시겠습니까? Y | N");
+				String str = sc.nextLine();
+				if (str.toUpperCase().equals("Y")) {
+					list.remove(i);
+					savePerformanceList(list);
+					break;
+				}
 			}
 		}
-		if(!flag) {
-			System.out.print("공연명 : ");
-			String name = sc.nextLine();
-			System.out.print("장르 : ");
-			String genre = sc.nextLine();
-			System.out.print("공연일 : ");
-			String day = sc.nextLine();
-			System.out.print("장소 : ");
-			String venue = sc.nextLine();
-			System.out.print("관람연령(숫자) : ");
-			String limitAge = sc.nextLine();
-			System.out.print("좌석수(숫자) : ");
-			String seats = sc.nextLine();
-			System.out.print("가격(숫자) : ");
-			String price = sc.nextLine();
-			
-			list.add(new Performance(id, name, genre, day, venue, Integer.parseInt(limitAge), seats,
-					Integer.parseInt(price)));
-			savePerformanceList(list);
+		if (!flag) {
+			System.out.println("입력하신 공연ID는 없습니다 다시 확인해주세요!");
 		}
-	}// end of insertPerformance
+	}// end of deletePerformance
 
 	// 공연 정보 저장
 	private static void savePerformanceList(ArrayList<Performance> list) {
@@ -401,7 +436,7 @@ public class Main {
 	}// end of saveList
 
 	// 공연 정보 로딩
-	public static ArrayList<Performance> performanceRoading() {
+	public static ArrayList<Performance> performanceLoading() {
 		ArrayList<Performance> list = null;
 		ObjectInputStream ois = null;
 		try {
@@ -442,7 +477,7 @@ public class Main {
 	}// end of saveCustomerList
 
 	// cart 정보 로딩
-	public static ArrayList<Cart> cartRoading() {
+	public static ArrayList<Cart> cartLoading() {
 		ArrayList<Cart> list = null;
 		ObjectInputStream ois = null;
 		try {
@@ -497,17 +532,17 @@ public class Main {
 		boolean flag = false;
 		int num = 0;
 		while (!flag) {
-			System.out.println("***********************************************");
-			System.out.println("\t\t" + "Ticket Market Menu");
+			System.out.println("***********************************************************");
+			System.out.println("*\t\t  " + "Performance Market Menu");
 
-			System.out.println("***********************************************");
-			System.out.println(" 1. 내 정보 확인하기  \t6. 예매내역 전체삭제하기");
-			System.out.println(" 2. 공연 정보 목록 보기\t7. 결제하기");
-			System.out.println(" 3. 공연 예매하기    \t8. 결제내역 보기");
-			System.out.println(" 4. 예매내역 목록 보기 \t9. 로그아웃");
-			System.out.println(" 5. 예매내역 항목 삭제 \t10.고객센터 ");
-			System.out.println("***********************************************");
-			System.out.print("메뉴 번호를 선택해주세요: ");
+			System.out.println("***********************************************************");
+			System.out.println("*  1. 내 정보 확인하기  \t\t6. 예매내역 전체삭제하기");
+			System.out.println("*  2. 공연 정보 목록 보기\t\t7. 결제하기");
+			System.out.println("*  3. 공연 예매하기    \t\t8. 결제내역 보기");
+			System.out.println("*  4. 예매내역 목록 보기 \t\t9. 로그아웃");
+			System.out.println("*  5. 예매내역 항목 삭제 \t\t10.고객센터 ");
+			System.out.println("***********************************************************");
+			System.out.print("*메뉴 번호를 선택해주세요: ");
 			strNum = sc.nextLine();
 			if (strNum.matches(regExp)) {
 				num = Integer.parseInt(strNum);
@@ -525,12 +560,14 @@ public class Main {
 
 	// 내정보 확인
 	public static void myInformation() {
-		System.out.println("이름: " + customer.getName());
-		System.out.println("나이: " + customer.getAge());
-		System.out.println("전화번호: " + customer.getPhone());
-		System.out.println("주소: " + customer.getAddress());
-		System.out.println("등급: " + customer.getGrade());
-		System.out.println("적립금: " + customer.getMileage());
+		System.out.println("──────────── 내 정 보 ────────────");
+		System.out.println(" 이름: " + customer.getName());
+		System.out.println(" 나이: " + customer.getAge());
+		System.out.println(" 전화번호: " + customer.getPhone());
+		System.out.println(" 주소: " + customer.getAddress());
+		System.out.println(" 등급: " + customer.getGrade());
+		System.out.println(" 적립금: " + customer.getMileage());
+		System.out.println();
 	}// end of myInformation
 
 	// 공연정보 검색
@@ -541,10 +578,10 @@ public class Main {
 		boolean flag = false;
 		int num = 0;
 		while (!flag) {
-			System.out.println("*********************************************************");
+			System.out.println("***********************************************************");
 			System.out.println("1.모든 공연 보기 2.검색 3.선택 정렬 4. 예매하기 5.뒤로 가기 ");
-			System.out.println("*********************************************************");
-			System.out.print("번호를 입력하세요: ");
+			System.out.println("***********************************************************");
+			System.out.print("*번호를 입력하세요: ");
 			strNum = sc.nextLine();
 			if (strNum.matches(regExp)) {
 				num = Integer.parseInt(strNum);
@@ -578,97 +615,93 @@ public class Main {
 	// 공연 검색
 	public static void findPerformance(ArrayList<Performance> pList) {
 		boolean flag = false;
-		System.out.print("찾으실 공연명: ");
-		String name = sc.nextLine();
+		System.out.print("검색 정보 입력:(공연ID,공연명,장소): ");
+		String info = sc.nextLine();
 
 		for (Performance data : pList) {
-			if (data.getName().equals(name)) {
-				System.out.println("공연ID| 공연타입 | 공연명 |  공연장소  |  공연일  |관람연령|  가 격  |  좌 석  | ");
-				System.out.print(" "+data.getPerformanceID() + "  | ");
-				System.out.print(data.getGenre() + "  | ");
-				System.out.print(data.getName() + "  | ");
-				System.out.print(data.getVenue() + " | ");
-				System.out.print(data.getDayOfPerformance() + " |  ");
-				System.out.print(data.getLimitAge() + " 세| ");
-				System.out.print(data.getTicketPrice() + " | ");
-				System.out.print(data.getSoldSeats() + "/" + data.getTotalSeats() + " | ");
-				System.out.println();
+			if (data.getName().contains(info) || data.getGenre().contains(info) || data.getVenue().contains(info)) {
+				cart.printPerformance(data);
 				flag = true;
-				break;
 			}
 		} // end of for
-		if(!flag) {
+		if (!flag) {
 			System.out.println("찾으시는 공연이 없습니다.");
 		}
 	}// end of finPerformance
 
 	// 선택 정렬 기능
 	public static void sortedPerformance(ArrayList<Performance> pList) {
+		boolean flag = false;
 		String regExp = "^[0-9]+$";
 		String strNum = null;
 		int num = 0;
 		ArrayList<Performance> subList = pList;
 
-		System.out.println("*********************************************************");
-		System.out.println("1.오름차순 2. 내림차순 3.가격높은순 4.가격낮은순 5.판매량순 ");
-		System.out.println("*********************************************************");
-		System.out.print("번호를 입력하세요: ");
-		strNum = sc.nextLine();
-		if (strNum.matches(regExp)) {
-			num = Integer.parseInt(strNum);
-			if (num > 0 && num <= 5) {
-				switch (num) {
-				case 1:
-					Collections.sort(subList);
-					cart.printPerformanceList(subList);
-					break;
-				case 2:
-					Collections.sort(subList.reversed());
-					cart.printPerformanceList(subList);
-					break;
-				case 3:
-					Collections.sort(subList, (p1, p2) -> {
-						int price1 = p1.getTicketPrice();
-						int price2 = p2.getTicketPrice();
-						if (price1 == price2) {
-							return p1.getPerformanceID().compareToIgnoreCase(p2.getPerformanceID());
-						}
-						return Integer.compare(price2, price1);
-					});
-					cart.printPerformanceList(subList);
-					break;
-				case 4:
-					Collections.sort(subList, (p1, p2) -> {
-						int price1 = p1.getTicketPrice();
-						int price2 = p2.getTicketPrice();
-						if (price1 == price2) {
-							return p1.getPerformanceID().compareToIgnoreCase(p2.getPerformanceID());
-						}
-						return Integer.compare(price1, price2);
-					});
-					cart.printPerformanceList(subList);
-					break;
-				case 5:
-					Collections.sort(subList,(p1, p2)-> {
+		while(!flag) {
+			System.out.println("***********************************************************");
+			System.out.println("* 1.오름차순  2.내림차순  3.가격높은순  4.가격낮은순  5.판매량순 6.뒤로가기");
+			System.out.println("***********************************************************");
+			System.out.print("*번호를 입력하세요: ");
+			strNum = sc.nextLine();
+			if (strNum.matches(regExp)) {
+				num = Integer.parseInt(strNum);
+				if (num > 0 && num <= 6) {
+					switch (num) {
+					case 1:
+						Collections.sort(subList);
+						cart.printPerformanceList(subList);
+						break;
+					case 2:
+						Collections.sort(subList.reversed());
+						cart.printPerformanceList(subList);
+						break;
+					case 3:
+						Collections.sort(subList, (p1, p2) -> {
+							int price1 = p1.getTicketPrice();
+							int price2 = p2.getTicketPrice();
+							if (price1 == price2) {
+								return p1.getPerformanceID().compareToIgnoreCase(p2.getPerformanceID());
+							}
+							return Integer.compare(price2, price1);
+						});
+						cart.printPerformanceList(subList);
+						break;
+					case 4:
+						Collections.sort(subList, (p1, p2) -> {
+							int price1 = p1.getTicketPrice();
+							int price2 = p2.getTicketPrice();
+							if (price1 == price2) {
+								return p1.getPerformanceID().compareToIgnoreCase(p2.getPerformanceID());
+							}
+							return Integer.compare(price1, price2);
+						});
+						cart.printPerformanceList(subList);
+						break;
+					case 5:
+						Collections.sort(subList, (p1, p2) -> {
 							int seat1 = p1.getSoldSeats();
 							int seat2 = p2.getSoldSeats();
-							if(seat1 == seat2) {
+							if (seat1 == seat2) {
 								return p1.getPerformanceID().compareToIgnoreCase(p2.getPerformanceID());
 							}
 							return seat2 - seat1;
 						});
-					cart.printPerformanceList(subList);
-					break;
+						cart.printPerformanceList(subList);
+						break;
+					case 6: 
+						flag = true;
+						break;
+					}
+				} else {
+					System.out.println("1~6까지 입력하세요!");
 				}
 			} else {
-				System.out.println("1~5까지 입력하세요!");
+				System.out.println("잘못입력하셨습니다. ");
 			}
-		} else {
-			System.out.println("잘못입력하셨습니다. ");
-		}
+		}//end of while
 	}// end of sortedPerformance
 
-	//에매하기
+	// 에매하기
 	public static void performanceReservation() {
 		cart.printPerformanceList(performanceList);
 		int count = 0;
@@ -676,34 +709,35 @@ public class Main {
 		boolean exitFlag = false;
 		while (!exitFlag) {
 			System.out.print("예매하실 공연의 ID를 입력하세요(뒤로가기 exit): ");
-			String string= sc.nextLine();
+			String string = sc.nextLine();
 			String str = string.toLowerCase();
 			if (str.toLowerCase().equals("exit")) {
 				exitFlag = true;
 			} else {
 				boolean flag = false;
-				boolean checkFlag= false;
+				boolean checkFlag = false;
 				int id = -1;
 				for (int i = 0; i < performanceList.size(); i++) {
-					if (str.equals(performanceList.get(i).getPerformanceID())) {
+					if (string.equals(performanceList.get(i).getPerformanceID())) {
 						checkFlag = true;
-						if(performanceList.get(i).getLimitAge()> customer.getAge()) {
-							System.out.println("선택하신 공연의 관람연령은 "+performanceList.get(i).getLimitAge()+"세 입니다");
+						if (performanceList.get(i).getLimitAge() > customer.getAge()) {
+							System.out.println("선택하신 공연의 관람연령은 " + performanceList.get(i).getLimitAge() + "세 입니다");
 							System.out.println("예매하실 수 없습니다.");
 							continue;
 						}
-						if(performanceList.get(i).getSoldSeats()== Integer.parseInt(performanceList.get(i).getTotalSeats())) {
+						if (performanceList.get(i).getSoldSeats() == Integer
+								.parseInt(performanceList.get(i).getTotalSeats())) {
 							System.out.println("선택하신 공연은 매진입니다.");
 							continue;
-						
-						}else {
+
+						} else {
 							id = i;
 							flag = true;
 							break;
 						}
 					}
 				}
-				if(!checkFlag) {
+				if (!checkFlag) {
 					System.out.println("!!찾으시는 공연이 없습니다!!");
 					continue;
 				}
@@ -722,36 +756,36 @@ public class Main {
 						cart.printPerformanceSeat(performanceList.get(id));
 						for (int k = 0; k < num; k++) {
 							try {
-									System.out.print("좌석을 선택하세요: ");
-									String str1 = sc.nextLine();
-									String str2 = str1.toUpperCase();
-									String s1 = str1.substring(1);
-									x = (str2.charAt(0))-65;
-									y = (Integer.parseInt(s1))-1;
-									if(performanceList.get(id).getSeat()[x][y].equals("■")) {
-										System.out.println("선택하신 좌석은 이미 예약되어 있습니다.");
-										System.out.println("다른 좌석을 선택해주세요!");
-										num +=1;
-										continue;
-									}
-									performanceList.get(id).getSeat()[x][y] = "■";
-									count++;
-									slist.add(str2);
-							}catch(Exception e) {
+								System.out.print("좌석을 선택하세요: ");
+								String str1 = sc.nextLine();
+								String str2 = str1.toUpperCase();
+								String s1 = str1.substring(1);
+								x = (str2.charAt(0)) - 65;
+								y = (Integer.parseInt(s1)) - 1;
+								if (performanceList.get(id).getSeat()[x][y].equals("■")) {
+									System.out.println("선택하신 좌석은 이미 예약되어 있습니다.");
+									System.out.println("다른 좌석을 선택해주세요!");
+									num += 1;
+									continue;
+								}
+								performanceList.get(id).getSeat()[x][y] = "■";
+								count++;
+								slist.add(str2);
+							} catch (Exception e) {
 								System.out.println("잘못입력하셨습니다 다시 입력해주세요!");
-								num +=1;
+								num += 1;
 								continue;
 							}
 						}
-						if(!flag1) {
+						if (!flag1) {
 							cart.printPerformanceSeat(performanceList.get(id));
 							String seat = "";
-							for(String data : slist) {
-								seat += data+",";
+							for (String data : slist) {
+								seat += data + ",";
 							}
-							performanceList.get(id).setSoldSeats(performanceList.get(id).getSoldSeats()+count);
-							System.out.println(performanceList.get(id).getName()+" 공연이 추가되었습니다");
-							if(!cart.isCartInPerformance(performanceList.get(id).getPerformanceID(),count,seat)) {
+							performanceList.get(id).setSoldSeats(performanceList.get(id).getSoldSeats() + count);
+							System.out.println(performanceList.get(id).getName() + " 공연이 추가되었습니다");
+							if (!cart.isCartInPerformance(performanceList.get(id).getPerformanceID(), count, seat)) {
 								cart.insertPerformance(performanceList.get(id), count, seat);
 							}
 						}
@@ -762,24 +796,21 @@ public class Main {
 				}
 			}
 		} // end of while
-	}//end of performanceReservation
-	
-	//장바구니 목록 출력
+	}// end of performanceReservation
+
+	// 장바구니 목록 출력
 	public static void printCartItem() {
-		if(cart.getList().size() == 0) {
-			System.out.println();
-			System.out.println("!!예매하신 공연이 없습니다!!");
-		}else {
+		if (cart.getList().size() == 0) {
+			System.out.println("─────────예매하신 공연이 없습니다─────────");
+		} else {
 			cart.printCart();
 		}
-	}//end of printCartItem
-	
+	}// end of printCartItem
 
-	//예매내역 모든 항목 지우기
-	public static void deleteAllCartItem(){
-		if (cart.getList().size() ==0) {
-			System.out.println();
-			System.out.println("!!예매하신 공연이 없습니다!!");
+	// 예매내역 모든 항목 지우기
+	public static void deleteAllCartItem() {
+		if (cart.getList().size() == 0) {
+			System.out.println("─────────예매하신 공연이 없습니다─────────");
 		} else {
 			System.out.println("예매하신 공연 모두 삭제하겠습니까? Y | N ");
 			String str = sc.nextLine();
@@ -788,236 +819,260 @@ public class Main {
 				try {
 					cart.deletePerformance(performanceList);
 					savePerformanceList(performanceList);
-					performanceList = performanceRoading();
-				}catch(Exception e) {
+					performanceList = performanceLoading();
+				} catch (Exception e) {
 					System.out.println("삭제함수 오류 2");
 				}
-				
+
 			}
 		}
-	}//end of deleteCartItem
-	
-	
-	//선택한 공연 삭제
+	}// end of deleteCartItem
+
+	// 선택한 공연 삭제
 	public static void cartRemoveItem() {
-		if(cart.getList().size() ==0) {
-			System.out.println();
-			System.out.println("!!예매하신 공연이 없습니다!!");
-		}else {
+		if (cart.getList().size() == 0) {
+			System.out.println("─────────예매하신 공연이 없습니다─────────");
+		} else {
 			cart.printCart();
-			boolean exitFlag= false;
-			
-			while(!exitFlag) {
+			boolean exitFlag = false;
+
+			while (!exitFlag) {
 				System.out.print("삭제하실 공연ID를 입력하세요(뒤로가기 exit): ");
 				String str = sc.nextLine();
-				if(str.toLowerCase().equals("exit")) {
+				if (str.toLowerCase().equals("exit")) {
 					exitFlag = true;
-				}else {
+				} else {
 					boolean flag = false;
 					int num = -1;
-					
-					for(int i=0;i<cart.getList().size();i++) {
-						if(str.equals(cart.getList().get(i).getPerformanceID())) {
+
+					for (int i = 0; i < cart.getList().size(); i++) {
+						if (str.equals(cart.getList().get(i).getPerformanceID())) {
 							num = i;
 							flag = true;
 							break;
 						}
 					}
-					if(flag) {
+					if (flag) {
 						System.out.println("정말 삭제하시겠습니까? Y | N");
 						str = sc.nextLine();
-						if(str.toUpperCase().equals("Y") ||str.toLowerCase().equals("y")) {
-							System.out.println(cart.getList().get(num).getPerformanceName()+"공연이 삭제되었습니다.");
-							for(int j=0;j<performanceList.size();j++) {
-								if(performanceList.get(j).getPerformanceID().equals(cart.getList().get(num).getPerformanceID())) {
-									performanceList.get(j).setSoldSeats((performanceList.get(j).getSoldSeats())-(cart.getList().get(num).getQuantity()));
+						if (str.toUpperCase().equals("Y") || str.toLowerCase().equals("y")) {
+							System.out.println(cart.getList().get(num).getPerformanceName() + "공연이 삭제되었습니다.");
+							for (int j = 0; j < performanceList.size(); j++) {
+								if (performanceList.get(j).getPerformanceID()
+										.equals(cart.getList().get(num).getPerformanceID())) {
+									performanceList.get(j).setSoldSeats((performanceList.get(j).getSoldSeats())
+											- (cart.getList().get(num).getQuantity()));
 								}
 							}
 							try {
 								cart.removeCart(num);
 								savePerformanceList(performanceList);
-								performanceList = performanceRoading();
-							}catch(Exception e) {
+								performanceList = performanceLoading();
+							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}
 						exitFlag = true;
-					}else {
+					} else {
 						System.out.println("잘못 입력하셨습니다");
 					}
 				}
-			}//end of while
+			} // end of while
 		}
-	}//end of cartRemoveItem
-	
+	}// end of cartRemoveItem
+
 	private static void cartPaying() {
-		int sum =0;
+		int sum = 0;
 		int sale = 0;
-		int point =0;
-		int sum1= 0;
-		if(cart.getList().size()==0) {
-			System.out.println();
-			System.out.println("!!예매하신 공연이 없습니다!!");
-		}else {
+		int point = 0;
+		int sum1 = 0;
+		if (cart.getList().size() == 0) {
+			System.out.println("─────────예매하신 공연이 없습니다─────────");
+		} else {
 			cart.printCart();
 			System.out.println("결제를 하시겠습니까? Y | N");
 			String str = sc.nextLine();
-			if(str.toUpperCase().equals("Y") || str.toLowerCase().equals("y")) {
-				for(int i=0;i<cart.getList().size();i++) {
-					System.out.println(cart.getList().get(i).getPerformanceName()+" 공연이 결제되었습니다");
-					sale +=(int)(cart.getList().get(i).getTotalPrice()* customer.getSaleRatio());
-					point +=(int)cart.getList().get(i).getTotalPrice()*customer.getMileageSale();
-					sum += (cart.getList().get(i).getTotalPrice())-(sale);
+			if (str.toUpperCase().equals("Y") || str.toLowerCase().equals("y")) {
+				for (int i = 0; i < cart.getList().size(); i++) {
+					System.out.println(cart.getList().get(i).getPerformanceName() + " 공연이 결제되었습니다");
+					sale += (int) (cart.getList().get(i).getTotalPrice() * customer.getSaleRatio());
+					point += (int) cart.getList().get(i).getTotalPrice() * customer.getMileageSale();
+					sum += (cart.getList().get(i).getTotalPrice()) - (sale);
 					cart.getPaymentItemList().add(cart.getList().get(i));
-					
+
 				}
-				for(int i=0;i<cart.getPaymentItemList().size();i++) {
+				for (int i = 0; i < cart.getPaymentItemList().size(); i++) {
 					sum1 += cart.getPaymentItemList().get(i).getTotalPrice();
 				}
 				customer.setAccumulatedPayment(sum1);
-				customer.setMileage(customer.getMileage()+point);
-				customerList=cart.changeCutomer(customerList, customer);
+				customer.setMileage(customer.getMileage() + point);
+				customerList = cart.changeCutomer(customerList, customer);
 				try {
 					saveCustomerList(customerList);
-					customerList =customerRoading();
+					customerList = customerLoading();
 					cart.getList().clear();
 					savePerformanceList(performanceList);
-					performanceList = performanceRoading();
-					for(int i=0;i<customerList.size();i++) {
-						if(customer.getId().equals(customerList.get(i).getId())) {
+					performanceList = performanceLoading();
+					for (int i = 0; i < customerList.size(); i++) {
+						if (customer.getId().equals(customerList.get(i).getId())) {
 							customer = customerList.get(i);
 						}
 					}
-				}catch(Exception e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				System.out.println("\t\t주문 총금액 : " + sum + "원\n");
 				System.out.println("\t\t할인된 금액 : " + sale + "원\n");
 				System.out.println("\t\t적립된 포인트 : " + point + "점\n");
 				System.out.println("-----------------------------------------------");
 				System.out.println();
-			}//end of if
+			} // end of if
 		}
-	}//end of cartPaying
+	}// end of cartPaying
 
-	//결제내역 출력
+	// 결제내역 출력
 	public static void printPaymentList() {
-		if(cart.getPaymentItemList().size() ==0) {
-			System.out.println();
-			System.out.println("!!결제하신 공연이 없습니다!!");
-		}else {
+		if (cart.getPaymentItemList().size() == 0) {
+			System.out.println("─────────결제하신 공연이 없습니다─────────");
+		} else {
 			cart.printPaymentCart();
 		}
 	}
-	
-	//고객센터 정보 로딩
-	public static ArrayList<Service> serviceRoading(){
+
+	// 고객센터 정보 로딩
+	public static ArrayList<Service> serviceLoading() {
 		ArrayList<Service> list = null;
 		ObjectInputStream ois = null;
 		try {
 			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("contend.db"))));
-			list = (ArrayList<Service>)ois.readObject();
-		}catch(Exception e) {
+			list = (ArrayList<Service>) ois.readObject();
+		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("로딩 오류");
 		}
 		return list;
 	}
-	
-	
-	//고객센터 연결
-	public static void conectService(ArrayList<Service> list) throws UnknownHostException, IOException {
-		Socket socket = new Socket("192.168.20.243",14276);
+
+	// 고객센터 연결
+	public static void connectService(ArrayList<Service> list) throws UnknownHostException, IOException {
+		Socket socket = new Socket("192.168.20.243", 14276);
 		DataInputStream dis = new DataInputStream(socket.getInputStream());
 		DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 		boolean flag = false;
-		System.out.println("****************!고 객 센 터 !********************");
+		System.out.println("┌────────────────────────────────────────────┐");
+		System.out.println(" *****************  고 객 센 터 ***************");
+		System.out.println("└────────────────────────────────────────────┘");
 		System.out.println();
-		while(!flag) {
+		while (!flag) {
 			try {
 				boolean flag1 = false;
-				boolean flag2 =false;			
-				System.out.println("vvvvvvvvvvvv질 문 키 워 드vvvvvvvvvvvvv");
+				boolean flag2 = false;
+				System.out.println("              자주 하는 질문 키워드 ");
+				System.out.println("────────────────────────────────────────────");
 				System.out.println();
 
-				System.out.print("[ "+list.get(0).getCategory()+" ]"+"  " );
-				for(int i=1;i<list.size();i++) {
-					if(list.get(i).getCategory().contains(list.get(i-1).getCategory())) {
-					}else {
-						System.out.print("[ "+list.get(i).getCategory()+" ]"+"  " );
+				System.out.print("[ " + list.get(0).getCategory() + " ]" + "  ");
+				for (int i = 1; i < list.size(); i++) {
+					if (list.get(i).getCategory().contains(list.get(i - 1).getCategory())) {
+					} else {
+						System.out.print("[ " + list.get(i).getCategory() + " ]" + "  ");
 					}
 				}
-				System.out.println("\n==================================");
-				
+				System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
 				String str = dis.readUTF();
 				System.out.println(str);
 				String s = sc.nextLine();
 				dos.writeUTF(s);
-				while(!flag1) {
+				while (!flag1) {
 					String str1 = dis.readUTF();
 					System.out.println(str1);
-					if(str1.equals("찾으시는 키워드가 없습니다.")) {
+					if (str1.equals("찾으시는 키워드가 없습니다.")) {
 						flag2 = true;
 					}
-					if(str1.equals("..")) {
+					if (str1.equals("..")) {
 						flag1 = true;
 						break;
 					}
-					System.out.println("==========================");
-				}//end of while
-				if(flag2) {
+					System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+				} // end of while
+				if (flag2) {
 					continue;
 				}
-				System.out.print("원하는 질문을 입력하세요: ");
+				System.out.print("원하는 질문번호를 입력하세요: ");
 				String s1 = sc.nextLine();
 				dos.writeUTF(s1);
 				String str3 = dis.readUTF();
 				System.out.println(str3);
-				
+				String str4 = dis.readUTF();
+				System.out.println(str4);
+
 				System.out.println("추가 질문 있으십니까 Y | N");
 				String str2 = sc.nextLine();
 				dos.writeUTF(str2.toUpperCase());
-				if(str2.toUpperCase().equals("N")) {
+				if (str2.toUpperCase().equals("N")) {
 					flag = true;
 					break;
 				}
-			}catch(Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}//end of while
+		} // end of while
 		try {
 			dis.close();
 			dos.close();
 			socket.close();
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println("고객센터를 종료합니다.");
-	}//end of conectService
-	
-	
-	//ID/PW 찾기
+	}// end of conectService
+
+	// ID/PW 찾기
 	public static void findCustomerInfo(ArrayList<Customer> list) {
 		boolean flag = false;
-		System.out.println("***********ID/PW 찾기************");
+		System.out.println("*********************");
+		System.out.println("*   ID / PW 찾 기    *");
+		System.out.println("*********************");
 		System.out.print("이름: ");
 		String name = sc.nextLine();
 		System.out.print("전화번호: ");
 		String phone = sc.nextLine();
-		
-		for(int i=0;i<list.size();i++) {
-			if(list.get(i).getName().equals(name) && list.get(i).getPhone().equals(phone)) {
-				System.out.println("이름:"+list.get(i).getName()+" 전화번호:"+list.get(i).getPhone());
-				System.out.println("ID: "+list.get(i).getId());
-				System.out.println("PW: "+list.get(i).getPassword());
+
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).getName().equals(name) && list.get(i).getPhone().equals(phone)) {
+				System.out.println("이름:" + list.get(i).getName() + " 전화번호:" + list.get(i).getPhone());
+				System.out.println("ID: " + list.get(i).getId());
+				System.out.println("PW: " + list.get(i).getPassword());
 				flag = true;
 				break;
 			}
 		}
-		if(!flag) {
+		if (!flag) {
 			System.out.println("입력하신 회원이 없습니다.");
 		}
-	}//end of findCustomerInfo
+	}// end of findCustomerInfo
 
+	// 관리자 정보 로드
+	public static void adminLoading() {
+		String[] s = new String[2];
+
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(new File("admin.db")));
+			s[0] = br.readLine();
+			s[1] = br.readLine();
+		} catch (Exception e) {
+			System.out.println("관리자 정보 로딩 오류");
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		admin.setAdminID(s[0]);
+		admin.setAdminPW(Integer.parseInt(s[1]));
+	}
 }// end of class
