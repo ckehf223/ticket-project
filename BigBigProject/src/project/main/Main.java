@@ -1,5 +1,8 @@
 package project.main;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -19,6 +22,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Scanner;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import project.cart.Cart;
 import project.member.Admin;
@@ -120,6 +128,7 @@ public class Main {
 									case 10:
 										serviceList = serviceLoading(); // 자주하는 질문 로딩
 										connectService(serviceList); // 고객센터 연결
+
 										break;
 									}// end of switch
 
@@ -369,8 +378,8 @@ public class Main {
 		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyMMddhhmmss");
 		String strDate = "P" + formatter.format(date);
-		
-		System.out.print("공연ID: "+strDate);
+
+		System.out.print("공연ID: " + strDate);
 		System.out.println();
 		System.out.print("공연명: ");
 		String name = sc.nextLine();
@@ -635,7 +644,7 @@ public class Main {
 		int num = 0;
 		ArrayList<Performance> subList = pList;
 
-		while(!flag) {
+		while (!flag) {
 			System.out.println("***********************************************************");
 			System.out.println("* 1.오름차순  2.내림차순  3.가격높은순  4.가격낮은순  5.판매량순 6.뒤로가기");
 			System.out.println("***********************************************************");
@@ -686,7 +695,7 @@ public class Main {
 						});
 						cart.printPerformanceList(subList);
 						break;
-					case 6: 
+					case 6:
 						flag = true;
 						break;
 					}
@@ -696,7 +705,7 @@ public class Main {
 			} else {
 				System.out.println("잘못입력하셨습니다. ");
 			}
-		}//end of while
+		} // end of while
 	}// end of sortedPerformance
 
 	// 에매하기
@@ -953,15 +962,12 @@ public class Main {
 	}
 
 	// 고객센터 연결
-	public static void connectService(ArrayList<Service> list) throws UnknownHostException, IOException {
-		Socket socket = new Socket("192.168.20.243", 14276);
+	public static void questionsService(ArrayList<Service> list) throws UnknownHostException, IOException {
+
+		Socket socket = new Socket("192.168.219.100", 14276);
 		DataInputStream dis = new DataInputStream(socket.getInputStream());
 		DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 		boolean flag = false;
-		System.out.println("┌────────────────────────────────────────────┐");
-		System.out.println(" *****************  고 객 센 터 ***************");
-		System.out.println("└────────────────────────────────────────────┘");
-		System.out.println();
 		while (!flag) {
 			try {
 				boolean flag1 = false;
@@ -1027,6 +1033,49 @@ public class Main {
 		System.out.println("고객센터를 종료합니다.");
 	}// end of conectService
 
+	public static void connectService(ArrayList<Service> list) {
+		boolean flag = false;
+		String strNum = null;
+		String regExp = "^[0-9]+$";
+		int num = 0;
+		try {
+			while (!flag) {
+				System.out.println("┌────────────────────────────────────────────┐");
+				System.out.println(" ***************** 고 객 센 터 ****************");
+				System.out.println(" * 1.자주하는 질문     2.1대1 문의       3.종료   *");
+				System.out.println(" ********************************************");
+				System.out.println("└────────────────────────────────────────────┘");
+				System.out.print("*번호를 선택해 주세요: ");
+
+				strNum = sc.nextLine();
+				if (strNum.matches(regExp)) {
+					num = Integer.parseInt(strNum);
+					if (num > 0 && num <= 3) {
+						switch (num) {
+
+						case 1:
+							questionsService(list);
+							break;
+						case 2:
+							Client client = new Client();
+							break;
+						case 3:
+							flag = true;
+							break;
+						}
+					} else {
+						System.out.println("1~3까지 입력해주세요!");
+					}
+				} else {
+					System.out.println("잘못입력하셨습니다.");
+				}
+			} // end of while
+		} catch (Exception e) {
+			System.out.println("고객 센터 오류");
+		}
+
+	}// end of connectService
+
 	// ID/PW 찾기
 	public static void findCustomerInfo(ArrayList<Customer> list) {
 		boolean flag = false;
@@ -1073,4 +1122,75 @@ public class Main {
 		admin.setAdminID(s[0]);
 		admin.setAdminPW(Integer.parseInt(s[1]));
 	}
+
+	// 1대1 문의 내부 클래스
+	public static class Client extends JFrame implements ActionListener {
+		// 멤버변수
+		private JTextArea textArea;
+		private JTextField textField;
+		private DataInputStream dis;
+		private DataOutputStream dos;
+		private String name;
+		
+		// 생성자
+		public Client() throws UnknownHostException, IOException {
+			super("1대1 문의");
+			this.name = customer.getName();
+
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			textArea = new JTextArea(10, 30);
+			textArea.setEditable(false);
+			JScrollPane jspane = new JScrollPane(textArea);
+			textField = new JTextField(30);
+			textField.addActionListener(this);
+			add(textField, BorderLayout.PAGE_END);
+			add(jspane, BorderLayout.CENTER);
+			pack();
+			setVisible(true);
+
+			Socket ss = new Socket("192.168.219.100", 9000);
+			dis = new DataInputStream(ss.getInputStream());
+			dos = new DataOutputStream(ss.getOutputStream());
+
+			Thread thread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					boolean flag = false;
+					while (!flag) {
+						try {
+							String data = dis.readUTF();
+							if(data.contains("안녕히 가십시오.")) {
+								flag = true;
+							}
+							textArea.append(data+"\n");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} // end of while
+					try {
+						dis.close();
+						dos.close();
+						ss.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			thread.start();
+
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String message = textField.getText();
+
+			try {
+				dos.writeUTF(name+": "+message);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+			textField.selectAll();
+			textArea.setCaretPosition(textArea.getDocument().getLength());
+		}
+	}// end of Client
 }// end of class
