@@ -923,7 +923,7 @@ public class Main {
 					for (int i = 0; i < customerList.size(); i++) {
 						if (customer.getId().equals(customerList.get(i).getId())) {
 							customer = customerList.get(i);
-						}
+						} 
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -964,7 +964,7 @@ public class Main {
 	// 고객센터 연결
 	public static void questionsService(ArrayList<Service> list) throws UnknownHostException, IOException {
 
-		Socket socket = new Socket("192.168.219.100", 14276);
+		Socket socket = new Socket("192.168.20.243", 14276);
 		DataInputStream dis = new DataInputStream(socket.getInputStream());
 		DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 		boolean flag = false;
@@ -1148,7 +1148,7 @@ public class Main {
 			pack();
 			setVisible(true);
 
-			Socket ss = new Socket("192.168.219.100", 9000);
+			Socket ss = new Socket("192.168.20.243", 9000);
 			dis = new DataInputStream(ss.getInputStream());
 			dos = new DataOutputStream(ss.getOutputStream());
 
