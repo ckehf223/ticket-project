@@ -47,7 +47,6 @@ public class Main {
 	public static void main(String[] args) {
 		int numberSelection = 0;
 		boolean exitFlag = false;
-
 		while (!exitFlag) {
 			try {
 				adminLoading();
@@ -1148,7 +1147,7 @@ public class Main {
 			pack();
 			setVisible(true);
 
-			Socket ss = new Socket("192.168.219.100", 9000);
+			Socket ss = new Socket("192.168.219.101", 9000);
 			dis = new DataInputStream(ss.getInputStream());
 			dos = new DataOutputStream(ss.getOutputStream());
 

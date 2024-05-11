@@ -10,11 +10,11 @@ public class Customer implements Serializable{
 	private String id; 					// 아이디
 	private int password; 				// 비밀번호
 	private int age;					// 나이
-	private double saleRatio = 0.0;	    // 할인율
-	private String grade ="SILVER"; 	// 등급
+	private double saleRatio;	    	// 할인율
+	private String grade; 				// 등급
 	private int accumulatedPayment; 	// 누적금액
 	private int mileage;				// 적립마일리지
-	private double mileageSale = 0.03;  // 마일리지 할인율
+	private double mileageSale;  // 마일리지 할인율
 
 	public Customer() {
 		
@@ -140,6 +140,11 @@ public class Customer implements Serializable{
 		this.saleRatio = saleRatio;
 	}
 
+	public void checkGrade() {
+		if(this.grade == "SILVER") {
+			
+		}
+	}
 	@Override
 	public int hashCode() {
 		return Objects.hash(this.id, this.password,this.grade);

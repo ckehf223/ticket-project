@@ -4,16 +4,16 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Performance implements Serializable,Comparable<Performance>{
-	private String performanceID;// key값으로 할 예정
-	private String name; // 공연명
-	private String genre; // 장르(뮤지컬, 연극, 콘서트)
-	private String dayOfPerformance; // 공연일
-	private String venue; // 장소
-	private int limitAge;	//관람제한연령
-	private String totalSeats; // 총좌석수
-	private int[][] seat; //좌석지정
-	private int soldSeats; // 판매좌석수
-	private int ticketPrice; // 티켓가격,compare
+	private String performanceID;		// key값으로 할 예정
+	private String name; 				// 공연명
+	private String genre; 				// 장르(뮤지컬, 연극, 콘서트)
+	private String dayOfPerformance; 	// 공연일
+	private String venue; 				// 장소
+	private int limitAge;				//관람제한연령
+	private String totalSeats;			// 총좌석수
+	private int[][] seat; 				//좌석지정
+	private int soldSeats;				// 판매좌석수
+	private int ticketPrice;			// 티켓가격,compare
 	
 	public Performance() {
 		

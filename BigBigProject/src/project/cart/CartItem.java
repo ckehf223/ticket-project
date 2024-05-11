@@ -5,7 +5,7 @@ import java.io.Serializable;
 import project.performance.Performance;
 
 public class CartItem implements Serializable,Comparable<CartItem>{
-	private Performance item;	
+		
 	private String performanceID;//comparableKey
 	private String performanceName;// 공연명
 	private String performanceDay; // 공연일/지역
@@ -13,7 +13,7 @@ public class CartItem implements Serializable,Comparable<CartItem>{
 	private String performanceVenue; //장소
 	private int quantity;	//인원수
 	private int totalPrice;	//총구매금액
-	
+	private Performance item;
 	public CartItem(){
 		this.seatNum ="";
 	}
