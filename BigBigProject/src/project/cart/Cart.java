@@ -161,9 +161,6 @@ public class Cart implements CartInterface, Serializable {
 		}
 	}
 
-	public void seatDelete(Performance p, String seat) {
-
-	}
 
 	public void printCart() {
 		System.out.println("──────────────────────────── 예 매 내 역 보기 ─────────────────────────────");

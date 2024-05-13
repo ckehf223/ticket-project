@@ -1,13 +1,9 @@
 package model;
 
-import java.util.Objects;
-
-import project.member.Customer;
-
 public class CustomerVO {
 	private int ct_no;					// 번호
 	private String ct_id; 				// 아이디
-	private int ct_pw; 					// 비밀번호
+	private String ct_pw; 				// 비밀번호
 	private String ct_name; 			// 이름
 	private int ct_age;					// 나이
 	private String ct_phone; 			// 전화번호
@@ -21,13 +17,13 @@ public class CustomerVO {
 	public CustomerVO() {
 		super();
 	}
-	public CustomerVO(String ct_id, int ct_pw) {
+	public CustomerVO(String ct_id, String ct_pw) {
 		super();
 		this.ct_id = ct_id;
 		this.ct_pw = ct_pw;
 	}
 	
-	public CustomerVO(String ct_id, int ct_pw, String ct_name, int ct_age, String ct_phone, String ct_address) {
+	public CustomerVO(String ct_id, String ct_pw, String ct_name, int ct_age, String ct_phone, String ct_address) {
 		super();
 		this.ct_id = ct_id;
 		this.ct_pw = ct_pw;
@@ -36,7 +32,8 @@ public class CustomerVO {
 		this.ct_phone = ct_phone;
 		this.ct_address = ct_address;
 	}
-	public CustomerVO(int ct_no, String ct_id, int ct_pw, String ct_name, int ct_age, String ct_phone,
+	
+	public CustomerVO(int ct_no, String ct_id, String ct_pw, String ct_name, int ct_age, String ct_phone,
 			String ct_address, String ct_grade, double ct_saleRatio, int ct_totalamount, int ct_mileage,
 			double ct_mileageSale) {
 		super();
@@ -65,10 +62,10 @@ public class CustomerVO {
 	public void setCt_id(String ct_id) {
 		this.ct_id = ct_id;
 	}
-	public int getCt_pw() {
+	public String getCt_pw() {
 		return ct_pw;
 	}
-	public void setCt_pw(int ct_pw) {
+	public void setCt_pw(String ct_pw) {
 		this.ct_pw = ct_pw;
 	}
 	public String getCt_name() {
@@ -124,6 +121,25 @@ public class CustomerVO {
 	}
 	public void setCt_mileageSale(double ct_mileageSale) {
 		this.ct_mileageSale = ct_mileageSale;
+	}
+	
+	public void printCustomer() {
+		System.out.println("──────────── 내 정 보 ────────────");
+		System.out.println(" 이름: " + ct_name);
+		System.out.println(" 나이: " + ct_age);
+		System.out.println(" 전화번호: " + ct_phone);
+		System.out.println(" 주소: " + ct_address);
+		System.out.println(" 등급: " + ct_grade);
+		System.out.println(" 적립금: " + ct_mileage);
+		System.out.println();
+	}
+	
+	@Override
+	public String toString() {
+		return "[ " + ct_no + ", " + ct_id + ", " + ct_pw + ", " + ct_name
+				+ ", " + ct_age + ", " + ct_phone + ", " + ct_address + ", "
+				+ ct_grade + ", " + ct_saleRatio + ", " + ct_totalamount + ", "
+				+ ct_mileage + ", " + ct_mileageSale + " ]";
 	}
 	
 

@@ -1,12 +1,8 @@
 package model;
 
-import java.util.Objects;
-
-import project.performance.Performance;
-
 public class PerformanceVO {
 	private int pf_no;					// 번호
-	private String pf_id;				// 공연id
+	private String pf_id;				// 공연아이디
 	private String pf_name; 			// 공연명
 	private String pf_genre; 			// 장르(뮤지컬, 연극, 콘서트)
 	private String pf_date; 			// 공연일
@@ -21,6 +17,22 @@ public class PerformanceVO {
 		
 	}
 	
+	
+	public PerformanceVO(String pf_id, String pf_name, String pf_genre, String pf_date, String pf_venue,
+			int pf_limitAge, String pf_totalSeats, int pf_price) {
+		super();
+		this.pf_id = pf_id;
+		this.pf_name = pf_name;
+		this.pf_genre = pf_genre;
+		this.pf_date = pf_date;
+		this.pf_venue = pf_venue;
+		this.pf_limitAge = pf_limitAge;
+		this.pf_totalSeats = pf_totalSeats;
+		this.pf_price = pf_price;
+		makeSeatsArray();
+	}
+
+
 	public PerformanceVO(int pf_no, String pf_id, String pf_name, String pf_genre, String pf_date, String pf_venue,
 			int pf_limitAge, String pf_totalSeats, int pf_price) {
 		super();
@@ -128,5 +140,17 @@ public class PerformanceVO {
 		}
 		this.seat = s;
 	}
-
+	
+	public void printPerformance() {
+		System.out.printf("%-16s", pf_id);
+		System.out.printf("%-9s", "  " + pf_genre);
+		System.out.printf("%-11s", "  " + pf_name);
+		System.out.printf("%-10s", " " + pf_date);
+		System.out.printf("%-10s", "  " + pf_venue);
+		System.out.printf("%-7s", "   " + pf_limitAge+"세");
+		System.out.printf("%-7s", "  " + pf_price);
+		System.out.printf("%-8s", " " + soldSeats+"/"+pf_totalSeats);
+		System.out.println();
+		System.out.println("------------------------------------------------------------------------------------");
+	}
 }

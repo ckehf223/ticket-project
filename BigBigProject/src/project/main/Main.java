@@ -184,7 +184,7 @@ public class Main {
 	public static Customer loginCheck(ArrayList<Customer> list) {
 		boolean flag = false;
 		Customer cus = new Customer();
-		;
+		
 		System.out.println("*********************");
 		System.out.println("*    로   그   인     *");
 		System.out.println("*********************");
@@ -731,7 +731,7 @@ public class Main {
 							System.out.println("예매하실 수 없습니다.");
 							continue;
 						}
-						if (performanceList.get(i).getSoldSeats() == Integer
+						if (performanceList.get(i).getSoldSeats() == Integer 
 								.parseInt(performanceList.get(i).getTotalSeats())) {
 							System.out.println("선택하신 공연은 매진입니다.");
 							continue;

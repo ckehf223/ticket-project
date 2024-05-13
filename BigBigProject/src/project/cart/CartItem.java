@@ -1,10 +1,8 @@
 package project.cart;
 
-import java.io.Serializable;
-
 import project.performance.Performance;
 
-public class CartItem implements Serializable,Comparable<CartItem>{
+public class CartItem{
 		
 	private String performanceID;//comparableKey
 	private String performanceName;// 공연명
@@ -86,13 +84,5 @@ public class CartItem implements Serializable,Comparable<CartItem>{
 	public void updateTotalPrice() {
 		this.totalPrice = this.quantity * this.item.getTicketPrice();
 	}
-
-
-	@Override
-	public int compareTo(CartItem o) {
-		return this.performanceID.compareToIgnoreCase(o.performanceID);
-	}
-
-	
 	
 }
