@@ -2,10 +2,14 @@ package view;
 
 import java.util.Scanner;
 
+import controller.CartDAO;
+import controller.CartPaymentRegisterManager;
 import controller.CustomerDAO;
 import controller.CustomerRegisterManager;
+import controller.DeletePerformanceReigersterManager;
 import controller.PerformanceDAO;
 import controller.PerformanceRegisterManager;
+import controller.ReservationRegisterManager;
 import model.CustomerVO;
 
 public class PerformanceMarketMain {
@@ -123,17 +127,22 @@ public class PerformanceMarketMain {
 				case CUSTOMER_CHOICE.CT_SHOW_PF:		//공연 정보 보기
 					PerformanceDAO.getPerformanceTotalList();
 					break;
-				case CUSTOMER_CHOICE.CT_RESERVATION_PF:	//공연 예매 하기		
+				case CUSTOMER_CHOICE.CT_RESERVATION_PF:	//공연 예매 하기
+					ReservationRegisterManager.reservationPerformance(cvo.getCt_id(), cvo.getCt_pw());
 					break;
 				case CUSTOMER_CHOICE.CT_SHOW_CART:		//예매 내역 보기	
-					break;
-				case CUSTOMER_CHOICE.CT_DELETE_PF:		//예매 공연 삭제
+					MenuViewer.printCart();
+					CartDAO.getCartList(cvo.getCt_id());
 					break;
 				case CUSTOMER_CHOICE.CT_DELETE_CART:	//예매 공연 모두 삭제
+					DeletePerformanceReigersterManager.cartDeletePerformance(cvo.getCt_id());
 					break;
 				case CUSTOMER_CHOICE.CT_PAYMENT:		//예매 공연 결제
+					CartPaymentRegisterManager.cartPayment(cvo);
 					break;
 				case CUSTOMER_CHOICE.CT_SHOW_PAYMENT_LIST:	//결제 내역 보기
+					MenuViewer.printPaymentCart();
+					CartDAO.getPaymentCartList(cvo.getCt_id());
 					break;
 				case CUSTOMER_CHOICE.SERVICE:			//고객센터 
 					break;

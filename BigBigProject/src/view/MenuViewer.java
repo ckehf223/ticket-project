@@ -1,7 +1,5 @@
 package view;
 
-import model.PerformanceVO;
-
 public class MenuViewer {
 	// 처음 보이는 메뉴
 	public static void firstMenuView() {
@@ -48,41 +46,17 @@ public class MenuViewer {
 		System.out.println("*\t\t  " + "Performance Market Menu");
 
 		System.out.println("***********************************************************");
-		System.out.println("*  1. 내 정보 확인하기  \t\t7. 예매내역 전체삭제하기");
-		System.out.println("*  2. 내 정보 수정하기  \t\t8. 결제하기");
-		System.out.println("*  3. 공연 정보 목록 보기\t\t9. 결제내역 보기");
-		System.out.println("*  4. 공연 예매 하기    \t\t10. 고객센터");
-		System.out.println("*  5. 예매내역 목록 보기 \t\t11.로그아웃 ");
-		System.out.println("*  6. 예매내역 항목 삭제");
+		System.out.println("*  1. 내 정보 확인하기  \t\t6. 예매내역 전체삭제하기");
+		System.out.println("*  2. 내 정보 수정하기  \t\t7. 결제하기");
+		System.out.println("*  3. 공연 정보 목록 보기\t\t8. 결제내역 보기");
+		System.out.println("*  4. 공연 예매 하기    \t\t9. 고객센터");
+		System.out.println("*  5. 예매내역 목록 보기 \t\t10.로그아웃 ");
 		System.out.println("***********************************************************");
 		System.out.print("*메뉴 번호를 선택해주세요: ");
 	}
 	
-	// 좌석 정보를 보여주는 함수
-	public static void printPerformanceSeat(PerformanceVO pvo) {
-		int ch = 'A';
-		System.out.println("***********************************************************");
-		System.out.println("*               공      연       무       대                 *");
-		System.out.println("***********************************************************");
-		System.out.println();
-		System.out.print("    " + "  1    2    3    4    5    6    7    8    9    10\n");
-		for (int i = 0; i < pvo.getSeat().length; i++) {
-			System.out.print(" " + (char) (ch + i));
-			for (int j = 0; j < pvo.getSeat()[i].length; j++) {
-				if (pvo.getSeat()[i][j] == 1) {
-					System.out.print("    " + "■");
-				}
-				if (pvo.getSeat()[i][j] == 0) {
-					System.out.print("    " + "□");
-				}
-			}
-			System.out.println("");
-			System.out.println("     ==================================================");
-		}
-	}
-	
 	//예매내역 
-	public void printCart() {
+	public static void printCart() {
 		System.out.println("──────────────────────────── 예 매 내 역 보기 ─────────────────────────────");
 		System.out.println("-----------------------------------------------------------------------");
 		System.out.println("   공 연 ID    │ 공 연 명  │  공연 장소   │ 공 연 일 │  좌 석  │  수 량  │ 합 계  ");
@@ -91,7 +65,7 @@ public class MenuViewer {
 	}
 	
 	//결제내역
-	public void printPaymentCart() {
+	public static void printPaymentCart() {
 		System.out.println("──────────────────────────── 결 제 내 역 보기 ─────────────────────────────");
 		System.out.println("-----------------------------------------------------------------------");
 		System.out.println("   공 연 ID    │ 공 연 명  │  공연 장소   │ 공 연 일 │  좌 석  │  수 량  │ 합 계  ");

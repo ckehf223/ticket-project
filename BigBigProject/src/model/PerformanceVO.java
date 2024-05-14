@@ -17,7 +17,12 @@ public class PerformanceVO {
 		
 	}
 	
-	
+	public PerformanceVO(String pf_totalSeats) {
+		super();
+		this.pf_totalSeats = pf_totalSeats;
+		makeSeatsArray();
+	}
+
 	public PerformanceVO(String pf_id, String pf_name, String pf_genre, String pf_date, String pf_venue,
 			int pf_limitAge, String pf_totalSeats, int pf_price) {
 		super();

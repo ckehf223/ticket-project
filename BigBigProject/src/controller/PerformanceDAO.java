@@ -219,7 +219,7 @@ public class PerformanceDAO {
 			pstmt.setString(1, pf_id);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				seatAll += (rs.getString("seat_location")+",") ;
+				seatAll += (rs.getString("seat_location")) ;
 			}
 			if(seatAll != null) {
 				String[] seatArray = seatAll.split(",");
