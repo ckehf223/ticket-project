@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class DeletePerformanceDAO {
 	
 	// 예매내역 삭제
-	public static void getCartPerformanceDelete(String ct_id) throws Exception {
+	public static void setCartPerformanceDelete(String ct_id) throws Exception {
 		String sql = "delete from cart where ct_id=? and payment_check=0";
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -75,5 +75,6 @@ public class DeletePerformanceDAO {
 			} catch (SQLException se) {
 			}
 		}
-	}
+	}//end of getSeatDelete
+	
 }

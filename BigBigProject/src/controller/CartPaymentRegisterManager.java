@@ -20,7 +20,8 @@ public class CartPaymentRegisterManager {
 			mileage = (int)(totalPrice*cvo.getCt_mileageSale());
 			cvo.setCt_totalamount(cvo.getCt_totalamount()+(totalPrice-salePrice));
 			cvo.setCt_mileage(cvo.getCt_mileage()+mileage);
-			if(cvo.getCt_totalamount() < 800_000 && cvo.getCt_totalamount() < 400_000) {
+			
+			if(cvo.getCt_totalamount() < 800_000 && cvo.getCt_totalamount() > 400_000) {
 				cvo.setCt_grade("GOLD");
 				cvo.setCt_saleRatio(0.06);
 				cvo.setCt_mileageSale(0.06);
@@ -28,6 +29,8 @@ public class CartPaymentRegisterManager {
 				cvo.setCt_grade("VIP");
 				cvo.setCt_saleRatio(0.08);
 				cvo.setCt_mileageSale(0.1);
+			}else {
+				
 			}
 			CartPaymentDAO.getCartPayment(cvo.getCt_id());
 			CartPaymentDAO.setCustomerChanger(cvo);

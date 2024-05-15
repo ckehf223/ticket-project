@@ -10,7 +10,7 @@ public class DeletePerformanceReigersterManager {
 		String yesNo = sc.nextLine();
 		if(yesNo.toUpperCase().equals("Y")) {
 			DeletePerformanceDAO.getSeatDelete(ct_id);
-			DeletePerformanceDAO.getCartPerformanceDelete(ct_id);
+			DeletePerformanceDAO.setCartPerformanceDelete(ct_id);
 		}
 	}
 }

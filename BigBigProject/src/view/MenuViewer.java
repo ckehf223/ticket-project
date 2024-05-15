@@ -49,8 +49,8 @@ public class MenuViewer {
 		System.out.println("*  1. 내 정보 확인하기  \t\t6. 예매내역 전체삭제하기");
 		System.out.println("*  2. 내 정보 수정하기  \t\t7. 결제하기");
 		System.out.println("*  3. 공연 정보 목록 보기\t\t8. 결제내역 보기");
-		System.out.println("*  4. 공연 예매 하기    \t\t9. 고객센터");
-		System.out.println("*  5. 예매내역 목록 보기 \t\t10.로그아웃 ");
+		System.out.println("*  4. 공연 예매 하기    \t\t9. 로그아웃");
+		System.out.println("*  5. 예매내역 목록 보기 \t\t ");
 		System.out.println("***********************************************************");
 		System.out.print("*메뉴 번호를 선택해주세요: ");
 	}

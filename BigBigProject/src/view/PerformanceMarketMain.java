@@ -144,8 +144,8 @@ public class PerformanceMarketMain {
 					MenuViewer.printPaymentCart();
 					CartDAO.getPaymentCartList(cvo.getCt_id());
 					break;
-				case CUSTOMER_CHOICE.SERVICE:			//고객센터 
-					break;
+//				case CUSTOMER_CHOICE.SERVICE:			//고객센터 
+//					break;
 				case CUSTOMER_CHOICE.EXIT:				//로그아웃
 					exitFlag = true;
 					break;                            
