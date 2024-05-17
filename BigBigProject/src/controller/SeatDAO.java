@@ -50,9 +50,11 @@ public class SeatDAO {
 				}
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
@@ -95,14 +97,17 @@ public class SeatDAO {
 				seats = seatAll.split(",");
 				for (int i = 0; i < seats.length; i++) {
 					if (seats[i].equals(seat)) {
+						System.out.println(seat);
 						success = false;
 					}
 				}
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
@@ -139,9 +144,11 @@ public class SeatDAO {
 				checkNum = rs.getInt("cnt");
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제

@@ -34,9 +34,11 @@ public class PerformanceDAO {
 			}
 
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
@@ -86,9 +88,11 @@ public class PerformanceDAO {
 			}
 
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
@@ -145,9 +149,11 @@ public class PerformanceDAO {
 				success = true;
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
@@ -185,9 +191,11 @@ public class PerformanceDAO {
 			}
 
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
@@ -226,9 +234,11 @@ public class PerformanceDAO {
 				count = seatArray.length;
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제

@@ -136,7 +136,7 @@ public class CustomerVO {
 	
 	@Override
 	public String toString() {
-		return "[ " + ct_no + ", " + ct_id + ", " + ct_pw + ", " + ct_name
+		return "[ " + ct_id  + ", " + ct_name
 				+ ", " + ct_age + ", " + ct_phone + ", " + ct_address + ", "
 				+ ct_grade + ", " + ct_saleRatio + ", " + ct_totalamount + ", "
 				+ ct_mileage + ", " + ct_mileageSale + " ]";

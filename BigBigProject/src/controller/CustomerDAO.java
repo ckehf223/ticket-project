@@ -30,9 +30,11 @@ public class CustomerDAO {
 						rs.getInt("ct_totalamount"), rs.getInt("ct_mileage"), rs.getDouble("ct_mileageratio"));
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				if (rs != null) {

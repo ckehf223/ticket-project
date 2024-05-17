@@ -38,9 +38,11 @@ public class ReservationDAO {
 			}
 
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
@@ -73,9 +75,11 @@ public class ReservationDAO {
 				limitAge = rs.getInt("pf_limitage");
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
@@ -117,9 +121,11 @@ public class ReservationDAO {
 			}
 
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제

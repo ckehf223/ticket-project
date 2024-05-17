@@ -25,9 +25,11 @@ public class CartPaymentDAO {
 				System.out.println("결제 실패");
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
@@ -60,9 +62,11 @@ public class CartPaymentDAO {
 				totalPrice += rs.getInt("cart_totalprice");
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
@@ -103,9 +107,11 @@ public class CartPaymentDAO {
 				System.out.println("업데이트 실패");
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제

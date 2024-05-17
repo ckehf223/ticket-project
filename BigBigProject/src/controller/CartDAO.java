@@ -13,7 +13,7 @@ public class CartDAO {
 	// 예매내역 확인
 	public static void getCartList(String id) {
 		String sql = "select P.pf_id,P.pf_name,P.pf_venue,to_char(P.pf_date) as pf_date,C.seat_location,c.cart_quantity,c.cart_totalprice"
-				+ " from cart C inner join performance P on C.pf_id = P.pf_id where C.ct_id=? and  payment_check=0";
+				+ " from cart C inner join performance P on C.pf_id = P.pf_id where C.ct_id=? and payment_check=0";
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -36,9 +36,11 @@ public class CartDAO {
 				System.out.println("-----------------------------------------------------------------------");
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			System.out.println("..");
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
@@ -82,9 +84,11 @@ public class CartDAO {
 				System.out.println("-----------------------------------------------------------------------");
 			}
 		} catch (SQLException se) {
-			se.printStackTrace();
+//			se.printStackTrace();
+			System.out.println("..");
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("..");
+//			e.printStackTrace();
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
