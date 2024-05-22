@@ -96,7 +96,7 @@ public class ReservationDAO {
 	}
 	
 	public static PerformanceVO getPerformanceVO(String pf_id) throws Exception {
-		String sql = "select pf_no,pf_id,pf_name,pf_genre,to_char(pf_date) as pf_date,pf_venue,pf_limitage,pf_totalseats,pf_price from performance order by pf_no asc";
+		String sql = "select pf_no,pf_id,pf_name,pf_genre,to_char(pf_date) as pf_date,pf_venue,pf_limitage,pf_totalseats,pf_price from performance where pf_id=?";
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -105,9 +105,10 @@ public class ReservationDAO {
 		try {
 			con = DBUtil.getConnection();
 			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, pf_id);
 			rs = pstmt.executeQuery();
 			
-			while (rs.next()) {
+			if (rs.next()) {
 				pvo = new PerformanceVO();
 				pvo.setPf_no(rs.getInt("pf_no"));
 				pvo.setPf_id(rs.getString("pf_id"));

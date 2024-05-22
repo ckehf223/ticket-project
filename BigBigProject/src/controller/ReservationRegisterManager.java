@@ -56,7 +56,7 @@ public class ReservationRegisterManager {
 			CartVO cartvo = new CartVO();
 			cartvo.setCt_id(ct_id);
 			cartvo.setCart_quantity(count);
-			cartvo.setPf_id(pf_id);
+			cartvo.setPf_id(pvo.getPf_id());
 			cartvo.setCart_totalPrice(pvo.getPf_price() * count);
 			cartvo.setSeat_location(seats);
 			cartvo.setPayment_check(0);

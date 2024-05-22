@@ -1,8 +1,5 @@
 package project.main;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -21,12 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Properties;
 import java.util.Scanner;
-
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import project.cart.Cart;
 import project.member.Admin;
@@ -1122,65 +1115,55 @@ public class Main {
 	}
 
 	public static void inquiryService() {
+		String filePath ="D:/git/ticket-repository/BigBigProject/src/controller/connect.properties";
+		Properties properties = new Properties();
 		boolean flag = false;
 		try {
-			Client client = new Client();
-			Thread.sleep(1000);
-			System.out.print("질문을 입력하세요: ");
-			while(!flag) {				
-				String message =sc.nextLine();
-				if(message.equals("exit")) {
-					flag = true;
-					return;
-				}
-				client.dos.writeUTF(message);
-			}
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
-	// 1대1 문의 내부 클래스
-	public static class Client{
-		// 멤버변수
-		private DataInputStream dis;
-		private DataOutputStream dos;
-		private String name;
-		// 생성자
-		public Client() throws UnknownHostException, IOException {
-			this.name = customer.getName();
-			Socket ss = new Socket("192.168.20.243", 9000);
-			dis = new DataInputStream(ss.getInputStream());
-			dos = new DataOutputStream(ss.getOutputStream());
-
+			properties.load(new FileReader(filePath));
+			String ip = properties.getProperty("ip");
+			String port = properties.getProperty("port");
+			Socket cs = new Socket(ip, Integer.parseInt(port));
+			DataOutputStream dos = new DataOutputStream(cs.getOutputStream());
 			Thread thread = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					boolean flag = false;
+					DataInputStream dis = null;
+					try {
+						dis = new DataInputStream(cs.getInputStream());
 					while (!flag) {
-						try {
 							String data = dis.readUTF();
 							System.out.println(data);
 							if(data.contains("안녕히 가십시오.")) {
 								flag = true;
 							}
 							
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
 					} // end of while
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 					try {
 						dis.close();
-						dos.close();
-						ss.close();
+						cs.close();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
 			});
 			thread.start();
-
+			Thread.sleep(1000);
+			System.out.print("질문을 입력하세요: ");
+			while(!flag) {				
+				String message =sc.nextLine();
+				if(message.equals("exit")) {
+					flag = true;
+					continue;
+				}
+				dos.writeUTF(customer.getName()+message);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
-	}// end of Client
+	}
+	
 }// end of class

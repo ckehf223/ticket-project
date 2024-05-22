@@ -19,7 +19,8 @@ public class CartPaymentDAO {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, ct_id);
 			int i= pstmt.executeUpdate();
-			if(i == 1) {
+			
+			if(i != 0) {
 				System.out.println("결제 성공");
 			}else {
 				System.out.println("결제 실패");
@@ -46,7 +47,7 @@ public class CartPaymentDAO {
 	
 	//결제 전 총금액 확인
 	public static int getCartTotalPrice(String ct_id) throws Exception{
-		String sql = "select cart_totalprice from cart where ct_id=?";
+		String sql = "select cart_totalprice from cart where ct_id=? and payment_check=0";
 		int totalPrice = 0;
 		Connection con = null;
 		PreparedStatement pstmt = null;

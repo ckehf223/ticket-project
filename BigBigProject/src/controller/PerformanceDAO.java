@@ -27,7 +27,7 @@ public class PerformanceDAO {
 			pstmt.setInt(8, pvo.getPf_price());
 
 			int i = pstmt.executeUpdate();
-			if (i == 1) {
+			if (i != 0) {
 				System.out.println(pvo.getPf_name() + "공연 등록 완료");
 			} else {
 				System.out.println("공연 등록 실패");
@@ -184,7 +184,7 @@ public class PerformanceDAO {
 			pstmt.setString(1, pf_id);
 
 			int i = pstmt.executeUpdate();
-			if (i == 1) {
+			if (i != 0) {
 				System.out.println(pf_id + "공연 삭제 완료");
 			} else {
 				System.out.println("공연 삭제 실패");
