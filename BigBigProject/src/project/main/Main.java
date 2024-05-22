@@ -74,7 +74,7 @@ public class Main {
 				continue;
 			}
 			try {
-
+				
 				switch (numberSelection) {
 				case 1:
 					customer = loginCheck(customerList);
@@ -1056,8 +1056,7 @@ public class Main {
 							questionsService(list);
 							break;
 						case 2:
-							Client client = new Client();
-							break;
+							inquiryService();
 						case 3:
 							flag = true;
 							break;
@@ -1122,32 +1121,36 @@ public class Main {
 		admin.setAdminPW(Integer.parseInt(s[1]));
 	}
 
+	public static void inquiryService() {
+		boolean flag = false;
+		try {
+			Client client = new Client();
+			Thread.sleep(1000);
+			System.out.print("질문을 입력하세요: ");
+			while(!flag) {				
+				String message =sc.nextLine();
+				if(message.equals("exit")) {
+					flag = true;
+					return;
+				}
+				client.dos.writeUTF(message);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	// 1대1 문의 내부 클래스
-	public static class Client extends JFrame implements ActionListener {
+	public static class Client{
 		// 멤버변수
-		private JTextArea textArea;
-		private JTextField textField;
 		private DataInputStream dis;
 		private DataOutputStream dos;
 		private String name;
-		
 		// 생성자
 		public Client() throws UnknownHostException, IOException {
-			super("1대1 문의");
 			this.name = customer.getName();
-
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			textArea = new JTextArea(10, 30);
-			textArea.setEditable(false);
-			JScrollPane jspane = new JScrollPane(textArea);
-			textField = new JTextField(30);
-			textField.addActionListener(this);
-			add(textField, BorderLayout.PAGE_END);
-			add(jspane, BorderLayout.CENTER);
-			pack();
-			setVisible(true);
-
-			Socket ss = new Socket("192.168.219.101", 9000);
+			Socket ss = new Socket("192.168.20.243", 9000);
 			dis = new DataInputStream(ss.getInputStream());
 			dos = new DataOutputStream(ss.getOutputStream());
 
@@ -1158,10 +1161,11 @@ public class Main {
 					while (!flag) {
 						try {
 							String data = dis.readUTF();
+							System.out.println(data);
 							if(data.contains("안녕히 가십시오.")) {
 								flag = true;
 							}
-							textArea.append(data+"\n");
+							
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -1177,19 +1181,6 @@ public class Main {
 			});
 			thread.start();
 
-		}
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			String message = textField.getText();
-
-			try {
-				dos.writeUTF(name+": "+message);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-
-			textField.selectAll();
-			textArea.setCaretPosition(textArea.getDocument().getLength());
 		}
 	}// end of Client
 }// end of class

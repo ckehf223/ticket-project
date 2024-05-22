@@ -9,22 +9,29 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Server {
 	public static ArrayList<ClientSocketThread> list = new ArrayList<Server.ClientSocketThread>();
+	public static Scanner sc = new Scanner(System.in);
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		ServerSocket ss = new ServerSocket(9000);
 		boolean flag = false;
-		int count = 1;
-		while(!flag) {
 			Socket cs = ss.accept();
 			ClientSocketThread cst = new ClientSocketThread(cs);
-			list.add(cst);
-			count++;
 			cst.start();
-			System.out.println(count+". 고객님께서 점속함");
-		}
+			System.out.println("********************************");
+			System.out.println("\t\t상담사 답변 ");
+			while(!flag) {
+				Thread.sleep(200);
+				String message = sc.nextLine();
+				if(message.equals("exit")) {
+					flag = true;
+					continue;
+				}
+				cst.dos.writeUTF("상담사 : "+message);
+			}
 
 	}// end of main
 
@@ -51,12 +58,14 @@ public class Server {
 			try {
 				dos.writeUTF("1대1 문의 사항 고객센터입니다");
 				dos.writeUTF("최선을 다하겠습니다.");
-			}catch(Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
 			while (isActive) {
 				try {
 					message = this.dis.readUTF();
+					System.out.println(message);
 					if (message.contains("exit") == true) {
 						this.dos.writeUTF("안녕히 가십시오.");
 						this.isActive = false;
@@ -76,5 +85,22 @@ public class Server {
 				e.printStackTrace();
 			}
 		}// end of run
+
+		public DataInputStream getDis() {
+			return dis;
+		}
+
+		public void setDis(DataInputStream dis) {
+			this.dis = dis;
+		}
+
+		public DataOutputStream getDos() {
+			return dos;
+		}
+
+		public void setDos(DataOutputStream dos) {
+			this.dos = dos;
+		}
+
 	}// end of ClientSocketThread
 }// end of Server
