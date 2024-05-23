@@ -57,7 +57,7 @@ public class CartPaymentRegisterManager {
 				
 			}
 			CartPaymentDAO.getCartPayment(cvo.getCt_id());
-			CartPaymentDAO.setCustomerChanger(cvo);
+			CartPaymentDAO.setCustomerChange(cvo);
 		}else {
 			
 		}

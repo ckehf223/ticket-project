@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,29 +11,28 @@ import model.PerformanceVO;
 public class PerformanceDAO {
 	// 공연 등록
 	public static void setPerformanceRegister(PerformanceVO pvo) throws Exception {
-		String sql = "insert into performance values (performance_seq.nextval,?,?,?,to_date(?),?,?,?,?)";
+		String sql = "{Call PF_ADD_PROC(?,?,?,?,?,?,?,?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, pvo.getPf_id());
-			pstmt.setString(2, pvo.getPf_name());
-			pstmt.setString(3, pvo.getPf_genre());
-			pstmt.setString(4, pvo.getPf_date());
-			pstmt.setString(5, pvo.getPf_venue());
-			pstmt.setInt(6, pvo.getPf_limitAge());
-			pstmt.setString(7, pvo.getPf_totalSeats());
-			pstmt.setInt(8, pvo.getPf_price());
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, pvo.getPf_id());
+			cstmt.setString(2, pvo.getPf_name());
+			cstmt.setString(3, pvo.getPf_genre());
+			cstmt.setString(4, pvo.getPf_date());
+			cstmt.setString(5, pvo.getPf_venue());
+			cstmt.setInt(6, pvo.getPf_limitAge());
+			cstmt.setString(7, pvo.getPf_totalSeats());
+			cstmt.setInt(8, pvo.getPf_price());
 
-			int i = pstmt.executeUpdate();
+			int i = cstmt.executeUpdate();
 			if (i != 0) {
 				System.out.println(pvo.getPf_name() + "공연 등록 완료");
 			} else {
 				System.out.println("공연 등록 실패");
 			}
-
 		} catch (SQLException se) {
 //			se.printStackTrace();
 			System.out.println("..");
@@ -42,8 +42,8 @@ public class PerformanceDAO {
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -174,16 +174,16 @@ public class PerformanceDAO {
 	
 	// 공연삭제
 	public static void setDeletePerformance(String pf_id) throws Exception {
-		String sql = "delete from performance where pf_id=?";
+		String sql = "{Call PF_DELETE_PROC(?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, pf_id);
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, pf_id);
 
-			int i = pstmt.executeUpdate();
+			int i = cstmt.executeUpdate();
 			if (i != 0) {
 				System.out.println(pf_id + "공연 삭제 완료");
 			} else {
@@ -199,8 +199,8 @@ public class PerformanceDAO {
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();

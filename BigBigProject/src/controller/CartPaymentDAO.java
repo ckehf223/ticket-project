@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,14 +12,14 @@ public class CartPaymentDAO {
 	
 	//결제하기
 	public static void getCartPayment(String ct_id) throws Exception {
-		String sql = "update cart set payment_check=1 where ct_id=? and payment_check=0";
+		String sql = "{CALL cart_payment_proc(?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, ct_id);
-			int i= pstmt.executeUpdate();
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, ct_id);
+			int i= cstmt.executeUpdate();
 			
 			if(i != 0) {
 				System.out.println("결제 성공");
@@ -34,8 +35,8 @@ public class CartPaymentDAO {
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -86,23 +87,23 @@ public class CartPaymentDAO {
 		return totalPrice;
 	}
 	//결제후 고객정보 바꿔주기
-	public static void setCustomerChanger(CustomerVO cvo) {
-		String sql = "update customer set ct_grade=?,ct_saleratio=?,ct_totalamount=?,ct_mileage=?,ct_mileageratio=? where ct_id=?";
+	public static void setCustomerChange(CustomerVO cvo) {
+		String sql = "{CALL cart_payment_customer_proc(?,?,?,?,?,?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 		
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, cvo.getCt_grade());
-			pstmt.setDouble(2, cvo.getCt_saleRatio());
-			pstmt.setInt(3, cvo.getCt_totalamount());
-			pstmt.setInt(4, cvo.getCt_mileage());
-			pstmt.setDouble(5, cvo.getCt_mileageSale());
-			pstmt.setString(6, cvo.getCt_id());
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, cvo.getCt_grade());
+			cstmt.setDouble(2, cvo.getCt_saleRatio());
+			cstmt.setInt(3, cvo.getCt_totalamount());
+			cstmt.setInt(4, cvo.getCt_mileage());
+			cstmt.setDouble(5, cvo.getCt_mileageSale());
+			cstmt.setString(6, cvo.getCt_id());
 			
-			int i= pstmt.executeUpdate();
-			if(i == 1) {
+			int i= cstmt.executeUpdate();
+			if(i != 0) {
 				System.out.println("업데이트 성공");
 			}else {
 				System.out.println("업데이트 실패");
@@ -116,8 +117,8 @@ public class CartPaymentDAO {
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();

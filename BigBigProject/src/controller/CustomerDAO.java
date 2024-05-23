@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,11 +31,11 @@ public class CustomerDAO {
 						rs.getInt("ct_totalamount"), rs.getInt("ct_mileage"), rs.getDouble("ct_mileageratio"));
 			}
 		} catch (SQLException se) {
-//			se.printStackTrace();
-			System.out.println("..");
+			se.printStackTrace();
+//			System.out.println("");
 		} catch (Exception e) {
-//			e.printStackTrace();
-			System.out.println("..");
+			e.printStackTrace();
+//			System.out.println("..");
 		} finally {
 			try {
 				if (rs != null) {
@@ -54,23 +55,24 @@ public class CustomerDAO {
 
 	// 회원가입
 	public static void setCustomerRegister(CustomerVO cvo) throws Exception {
-		String sql = "insert into customer (ct_no,ct_id,ct_pw,ct_name,ct_age,ct_phone,ct_address) values (customer_seq.nextval,?,?,?,?,?,?)";
+		String sql = "{CALL ct_signin_proc(?,?,?,?,?,?)}";
 
 		Connection con = null;
-		PreparedStatement pstmt = null;
-
+		CallableStatement cstmt = null;
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, cvo.getCt_id());
-			pstmt.setString(2, cvo.getCt_pw());
-			pstmt.setString(3, cvo.getCt_name());
-			pstmt.setInt(4, cvo.getCt_age());
-			pstmt.setString(5, cvo.getCt_phone());
-			pstmt.setString(6, cvo.getCt_address());
-			int i = pstmt.executeUpdate();
-			if (i == 1) {
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, cvo.getCt_id());
+			cstmt.setString(2, cvo.getCt_pw());
+			cstmt.setString(3, cvo.getCt_name());
+			cstmt.setInt(4, cvo.getCt_age());
+			cstmt.setString(5, cvo.getCt_phone());
+			cstmt.setString(6, cvo.getCt_address());
+			int i = cstmt.executeUpdate();
+			
+			if (i != 0) {
 				System.out.println("회원가입 완료");
+				cvo.printCustomer();
 			} else {
 				System.out.println("회원가입 실패");
 			}
@@ -80,8 +82,8 @@ public class CustomerDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -93,21 +95,21 @@ public class CustomerDAO {
 
 	// 회원 정보 수정
 	public static void setCustomerUpdate(CustomerVO cvo) throws Exception {
-		String sql = "update customer set ct_pw=?, ct_phone=?, ct_address=? where ct_id=?";
+		String sql = "{CALL ct_update_proc(?,?,?,?)}";
 
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, cvo.getCt_pw());
-			pstmt.setString(2, cvo.getCt_phone());
-			pstmt.setString(3, cvo.getCt_address());
-			pstmt.setString(4, cvo.getCt_id());
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, cvo.getCt_pw());
+			cstmt.setString(2, cvo.getCt_phone());
+			cstmt.setString(3, cvo.getCt_address());
+			cstmt.setString(4, cvo.getCt_id());
 
-			int i = pstmt.executeUpdate();
-			if (i == 1) {
+			int i = cstmt.executeUpdate();
+			if (i != 0) {
 				System.out.println(cvo.getCt_id()+"회원 정보 수정 완료");
 			} else {
 				System.out.println("회원정보 수정 실패");
@@ -118,8 +120,8 @@ public class CustomerDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -212,18 +214,18 @@ public class CustomerDAO {
 	
 	//회원 삭제
 	public static void setCustomerDelete(String id) throws Exception{
-		String sql = "delete customer where ct_id=?";
+		String sql = "{Call ct_delete_proc(?)}";
 
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, id);
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, id);
 			
-			int i= pstmt.executeUpdate();
-			if(i == 1) {
+			int i= cstmt.executeUpdate();
+			if(i != 0) {
 				System.out.println(id+"회원 삭제 완료");
 			}else {
 				System.out.println(id+"회원 삭제 실패/n 다시 확인 바랍니다.");
@@ -234,8 +236,8 @@ public class CustomerDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();

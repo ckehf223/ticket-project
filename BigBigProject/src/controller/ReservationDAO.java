@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,31 +13,26 @@ public class ReservationDAO {
 		
 	//예매하기
 	public static void getReservationPerformance(CartVO cartvo) throws Exception {
-		String sql = "insert into cart values (cart_seq.nextval,?,?,?,?,?,?)";
-		String sql2 = "insert into seat values (seat_seq.nextval,?,?)";
+		String sql = "{CALL cart_add_proc(?,?,?,?,?,?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
-		
+		CallableStatement cstmt = null;
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, cartvo.getCt_id());
-			pstmt.setString(2, cartvo.getPf_id());
-			pstmt.setInt(3, cartvo.getCart_quantity());
-			pstmt.setInt(4, cartvo.getCart_totalPrice());
-			pstmt.setString(5, cartvo.getSeat_location());
-			pstmt.setInt(6, cartvo.getPayment_check());
-			int i = pstmt.executeUpdate();
-			if (i == 1) {
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, cartvo.getCt_id());
+			cstmt.setString(2, cartvo.getPf_id());
+			cstmt.setInt(3, cartvo.getCart_quantity());
+			cstmt.setInt(4, cartvo.getCart_totalPrice());
+			cstmt.setString(5, cartvo.getSeat_location());
+			cstmt.setInt(6, cartvo.getPayment_check());
+			
+			int i = cstmt.executeUpdate();
+			
+			if (i != 0) {
 				System.out.println("공연 예매 완료");
-				pstmt = con.prepareStatement(sql2);
-				pstmt.setString(1, cartvo.getPf_id());
-				pstmt.setString(2, cartvo.getSeat_location());
-				pstmt.executeUpdate();
 			} else {
 				System.out.println("공연 예매 실패");
 			}
-
 		} catch (SQLException se) {
 //			se.printStackTrace();
 			System.out.println("..");
@@ -46,8 +42,8 @@ public class ReservationDAO {
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();

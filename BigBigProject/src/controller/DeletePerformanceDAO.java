@@ -1,24 +1,26 @@
 package controller;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DeletePerformanceDAO {
 	
 	// 예매내역 삭제
 	public static void setCartPerformanceDelete(String ct_id) throws Exception {
-		String sql = "delete from cart where ct_id=? and payment_check=0";
+		String sql = "{Call cart_delete_proc(?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, ct_id);
-			int i = pstmt.executeUpdate();
-		
-			if (i == 1) {
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, ct_id);
+			
+			int i = cstmt.executeUpdate();
+			if (i != 0) {
 				System.out.println("예매내역 삭제 완료");
 			} else {
 				System.out.println("예매내역 삭제 실패");
@@ -33,8 +35,8 @@ public class DeletePerformanceDAO {
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -44,23 +46,26 @@ public class DeletePerformanceDAO {
 		}
 	}// end of getReservationPerformance()
 	
-	//예매내역과 같은 좌석 정보 삭제
-	public static void getSeatDelete(String ct_id) throws Exception {
-		String sql = "delete from seat where (seat_location || pf_id) in(select seat_location || pf_id  from cart where ct_id =? and payment_check=0)";
+	//예매한 항목 존재 여부
+	public static boolean getCartCount(String ct_id) {
+		boolean success = false;
+		String sql = "select count(*) as cnt from cart where ct_id=? and payment_check=0";
 		Connection con = null;
 		PreparedStatement pstmt = null;
-
+		ResultSet rs = null;
+		int check =0;
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
+			pstmt = con.prepareCall(sql);
 			pstmt.setString(1, ct_id);
-			int i = pstmt.executeUpdate();
-			if (i == 1) {
-				System.out.println("예매공연 좌석 삭제 완료");
-			} else {
-				System.out.println("예매공연 좌석 실패");
+			
+			rs = pstmt.executeQuery();
+			check= rs.getInt("cnt");
+			
+			if(check !=0) {
+				success = true;
 			}
-
+			
 		} catch (SQLException se) {
 //			se.printStackTrace();
 			System.out.println("..");
@@ -70,6 +75,9 @@ public class DeletePerformanceDAO {
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
+				if (rs != null) {
+					rs.close();
+				}
 				if (pstmt != null) {
 					pstmt.close();
 				}
@@ -79,6 +87,8 @@ public class DeletePerformanceDAO {
 			} catch (SQLException se) {
 			}
 		}
-	}//end of getSeatDelete
+		
+		return success;
+	}
 	
 }
