@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.Scanner;
 
 import model.PerformanceVO;
-import project.performance.Performance;
 
 public class PerformanceRegisterManager {
 	public static Scanner sc = new Scanner(System.in);

@@ -36,10 +36,7 @@ public class CartPaymentRegisterManager {
 				}
 			}
 			totalPrice = CartPaymentDAO.getCartTotalPrice(cvo.getCt_id());
-			System.out.println(totalPrice);
-			System.out.println(point);
 			totalPrice = totalPrice - point;
-			System.out.println(totalPrice);
 			salePrice =  (int)(totalPrice*cvo.getCt_saleRatio());
 			mileage = (int)(totalPrice*cvo.getCt_mileageSale());
 			cvo.setCt_totalamount(cvo.getCt_totalamount()+(totalPrice-salePrice));
