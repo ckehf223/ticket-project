@@ -7,6 +7,8 @@ public class DeletePerformanceReigersterManager {
 	//예매내역 전체 삭제
 	public static void cartDeletePerformance(String ct_id) throws Exception {
 		boolean success = DeletePerformanceDAO.getCartCount(ct_id);
+		
+		System.out.println(success);
 		if(!success) {
 			System.out.println("예매내역이 없습니다.");
 			return;

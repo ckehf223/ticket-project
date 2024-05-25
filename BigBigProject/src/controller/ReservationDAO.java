@@ -5,9 +5,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import model.CartVO;
 import model.PerformanceVO;
+import oracle.jdbc.OracleTypes;
 
 public class ReservationDAO {
 		
@@ -55,21 +57,19 @@ public class ReservationDAO {
 	
 	//관람연령 체크
 	public static int getCheckLimitAge(String pf_id) throws Exception{
-		String sql = "select pf_limitage from performance where pf_id=?";
+		String sql = "{CALL CHECK_LIMITAGE(?,?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+		CallableStatement cstmt = null;
 		int limitAge = 0;
 		
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, pf_id);
-			rs = pstmt.executeQuery();
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, pf_id);
+			cstmt.registerOutParameter(2, Types.NUMERIC);
+			cstmt.executeQuery();
 			
-			if(rs.next()) {
-				limitAge = rs.getInt("pf_limitage");
-			}
+			limitAge = cstmt.getInt(2);
 		} catch (SQLException se) {
 //			se.printStackTrace();
 			System.out.println("..");
@@ -79,8 +79,8 @@ public class ReservationDAO {
 		} finally {
 			try {
 				// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -91,18 +91,22 @@ public class ReservationDAO {
 		return limitAge;
 	}
 	
+	//공연 정보 가져오기
 	public static PerformanceVO getPerformanceVO(String pf_id) throws Exception {
-		String sql = "select pf_no,pf_id,pf_name,pf_genre,to_char(pf_date) as pf_date,pf_venue,pf_limitage,pf_totalseats,pf_price from performance where pf_id=?";
+		String sql = "{CALL PF_GET_PROC(?,?)}";
 
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 		ResultSet rs = null;
 		PerformanceVO pvo = null;
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, pf_id);
-			rs = pstmt.executeQuery();
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, pf_id);
+			cstmt.registerOutParameter(2, OracleTypes.CURSOR);
+			
+			cstmt.executeQuery();
+			rs = (ResultSet)cstmt.getObject(2);
 			
 			if (rs.next()) {
 				pvo = new PerformanceVO();
@@ -129,8 +133,8 @@ public class ReservationDAO {
 				if (rs != null) {
 					rs.close();
 				}
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();

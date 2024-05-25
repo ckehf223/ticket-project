@@ -1,29 +1,30 @@
 package controller;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-import model.CartVO;
+import oracle.jdbc.OracleTypes;
 
 public class CartDAO {
 
 	// 예매내역 확인
 	public static void getCartList(String id) {
-		String sql = "select P.pf_id,P.pf_name,P.pf_venue,to_char(P.pf_date) as pf_date,C.seat_location,c.cart_quantity,c.cart_totalprice"
-				+ " from cart C inner join performance P on C.pf_id = P.pf_id where C.ct_id=? and payment_check=0";
+		String sql = "{CALL CART_LIST(?,?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 		ResultSet rs = null;
 
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, id);
-			rs = pstmt.executeQuery();
-
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, id);
+			cstmt.registerOutParameter(2, OracleTypes.CURSOR);
+			
+			cstmt.executeQuery();
+			rs = (ResultSet)cstmt.getObject(2);
 			while (rs.next()) {
 				System.out.printf("%-16s", rs.getString("pf_id"));
 				System.out.printf("%-9s", "  " + rs.getString("pf_name"));
@@ -47,8 +48,8 @@ public class CartDAO {
 				if (rs != null) {
 					rs.close();
 				}
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -60,18 +61,19 @@ public class CartDAO {
 
 	// 결제내역 리스트
 	public static void getPaymentCartList(String id) {
-		String sql = "select P.pf_id,P.pf_name,P.pf_venue,to_char(P.pf_date) as pf_date,C.seat_location,c.cart_quantity,c.cart_totalprice"
-				+ " from cart C inner join performance P on C.pf_id = P.pf_id where C.ct_id=? and  payment_check=1";
+		String sql = "{CALL PAYMENT_CART_LIST(?,?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 		ResultSet rs = null;
 
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, id);
-			rs = pstmt.executeQuery();
-
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, id);
+			cstmt.registerOutParameter(2, OracleTypes.CURSOR);
+			
+			cstmt.executeQuery();
+			rs = (ResultSet)cstmt.getObject(2);
 			while (rs.next()) {
 				System.out.printf("%-16s", rs.getString("pf_id"));
 				System.out.printf("%-9s", "  " + rs.getString("pf_name"));
@@ -95,8 +97,8 @@ public class CartDAO {
 				if (rs != null) {
 					rs.close();
 				}
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();

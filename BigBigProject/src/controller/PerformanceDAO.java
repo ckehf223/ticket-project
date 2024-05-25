@@ -55,7 +55,7 @@ public class PerformanceDAO {
 
 	// 공연 정보 리스트
 	public static void getPerformanceTotalList() throws Exception {
-		String sql = "select pf_no,pf_id,pf_name,pf_genre,to_char(pf_date) as pf_date,pf_venue,pf_limitage,pf_totalseats,pf_price from performance order by pf_no asc";
+		String sql = "select pf_no,pf_id,pf_name,pf_genre,to_char(pf_date) as pf_date,pf_venue,pf_limitage,pf_totalseats,pf_price from performance where pf_allowcheck=1 order by pf_no asc";
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -112,7 +112,7 @@ public class PerformanceDAO {
 
 	// 공연 정보 찾기
 	public static boolean getPerformanceSearch(String id) throws Exception {
-		String sql = "select pf_no,pf_id,pf_name,pf_genre,to_char(pf_date) as pf_date,pf_venue,pf_limitage,pf_totalseats,pf_price from performance where pf_id=? order by pf_no asc";
+		String sql = "select pf_no,pf_id,pf_name,pf_genre,to_char(pf_date) as pf_date,pf_venue,pf_limitage,pf_totalseats,pf_price from performance where pf_id=? and pf_allowcheck=1  order by pf_no asc";
 		
 		Connection con = null;
 		PreparedStatement pstmt = null;

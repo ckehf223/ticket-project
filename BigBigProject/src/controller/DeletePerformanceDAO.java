@@ -10,7 +10,7 @@ public class DeletePerformanceDAO {
 	
 	// 예매내역 삭제
 	public static void setCartPerformanceDelete(String ct_id) throws Exception {
-		String sql = "{Call cart_delete_proc(?)}";
+		String sql = "{CALL cart_delete_proc(?)}";
 		Connection con = null;
 		CallableStatement cstmt = null;
 
@@ -25,7 +25,6 @@ public class DeletePerformanceDAO {
 			} else {
 				System.out.println("예매내역 삭제 실패");
 			}
-
 		} catch (SQLException se) {
 //			se.printStackTrace();
 			System.out.println("..");
@@ -50,19 +49,26 @@ public class DeletePerformanceDAO {
 	public static boolean getCartCount(String ct_id) {
 		boolean success = false;
 		String sql = "select count(*) as cnt from cart where ct_id=? and payment_check=0";
+		System.out.println(ct_id);
+		
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		
 		int check =0;
+		
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareCall(sql);
+			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, ct_id);
 			
 			rs = pstmt.executeQuery();
-			check= rs.getInt("cnt");
+			if(rs.next()) {
+				check= rs.getInt("cnt");
+				System.out.println(check);				
+			}
 			
-			if(check !=0) {
+			if(check > 0) {
 				success = true;
 			}
 			

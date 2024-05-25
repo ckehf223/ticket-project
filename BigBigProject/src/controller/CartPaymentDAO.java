@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import model.CustomerVO;
+import oracle.jdbc.OracleTypes;
 
 public class CartPaymentDAO {
 	
@@ -48,18 +49,20 @@ public class CartPaymentDAO {
 	
 	//결제 전 총금액 확인
 	public static int getCartTotalPrice(String ct_id) throws Exception{
-		String sql = "select cart_totalprice from cart where ct_id=? and payment_check=0";
+		String sql = " {CALL CART_TOTALPRICE(?,?)}";
 		int totalPrice = 0;
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 		ResultSet rs = null;
 		
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, ct_id);
-			rs = pstmt.executeQuery();
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, ct_id);
+			cstmt.registerOutParameter(2, OracleTypes.CURSOR);
 			
+			cstmt.executeQuery();
+			rs = (ResultSet)cstmt.getObject(2);
 			while(rs.next()) {
 				totalPrice += rs.getInt("cart_totalprice");
 			}
@@ -75,8 +78,8 @@ public class CartPaymentDAO {
 				if(rs != null) {
 					rs.close();
 				}
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();

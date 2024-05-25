@@ -7,23 +7,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import model.CustomerVO;
+import oracle.jdbc.OracleTypes;
 
 public class CustomerDAO {
 
 	// 로그인
 	public static CustomerVO getCustomerLogin(String id, String pw) throws Exception {
-		String sql = "select * from customer where ct_id=? and ct_pw=?";
+		String sql = "{CALL CT_LOGIN_PROC(?,?,?)}";
 		CustomerVO cvo = null;
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 		ResultSet rs = null;
 		try {
 			con = DBUtil.getConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, id);
-			pstmt.setString(2, pw);
-			rs = pstmt.executeQuery();
-
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, id);
+			cstmt.setString(2, pw);
+			cstmt.registerOutParameter(3, OracleTypes.CURSOR);
+			cstmt.executeQuery();
+			rs = (ResultSet)cstmt.getObject(3);
 			if (rs.next()) {
 				cvo = new CustomerVO(rs.getInt("ct_no"), rs.getString("ct_id"), rs.getString("ct_pw"),
 						rs.getString("ct_name"), rs.getInt("ct_age"), rs.getString("ct_phone"),
@@ -41,8 +43,8 @@ public class CustomerDAO {
 				if (rs != null) {
 					rs.close();
 				}
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();

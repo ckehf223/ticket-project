@@ -55,6 +55,13 @@ public class CartPaymentRegisterManager {
 			}
 			CartPaymentDAO.getCartPayment(cvo.getCt_id());
 			CartPaymentDAO.setCustomerChange(cvo);
+			
+			System.out.println("─────────────────────────결 제 영 수 증 ──────────────────────");
+			System.out.println("\t결제금액 : " + totalPrice + "  \t\t할인금액 : " + salePrice);
+			System.out.println("\t사용 포인트 : " +point + "\t남은 포인트 : " + cvo.getCt_mileage());
+			System.out.println("\t 구매해 주셔서 정말 감사합니다.");
+			System.out.println("───────────────────────────────────────────────────────────");
+			System.out.println();
 		}else {
 			
 		}
