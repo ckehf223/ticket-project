@@ -52,7 +52,7 @@
 ### adminMenu
 - 관리자 메뉴 회원,공연 관리
 
-<img src="./images/관리자 메뉴.png" alt="관리자 메뉴" width="300">
+<img src="./images/관리자 메뉴.png" alt="관리자 메뉴" width="300" >
 
 ### customerMenu
 - 고객 메뉴 내정보,공연정보 확인/공연 예매,취소,결제,고객센터 문의
@@ -62,21 +62,21 @@
 ### reservation performance
 - 공연 예매시 좌석 선택
 
-<img src="./images/공연 예매 1.png" alt="공연 예매 좌석 선택 화면" width="300">
+<img src="./images/공연 예매 1.png" alt="공연 예매 좌석 선택 화면" width="400" height="400">
 
 - 좌석 선택 후
 
-<img src="./images/공연 예매 2.png" alt="좌석 선택 후 화면" width="300">
+<img src="./images/공연 예매 2.png" alt="좌석 선택 후 화면" width="400" height="400">
 
 ### service center
 - 고객센터 1대1 문의 하기 회원
 
-<img src="./images/고객센터 1대1문의 클라이언트.png" alt="1대1 문의 회원" width="300">
+<img src="./images/고객센터 1대1문의 클라이언트.png" alt="1대1 문의 회원" width="300" height="150">
 
 -고객센터 1대1 문의 하기 서버
 
-<img src="./images/고객센터 1대1문의 서버.png" alt="1대1 문의 서버" width="300">
+<img src="./images/고객센터 1대1문의 서버.png" alt="1대1 문의 서버" width="300" height="150">
 
 -고객센터 내 문의 내역
 
-<img src="./images/고객센터 내 문의내역.png" alt="내 문의내역" width="300">
+<img src="./images/고객센터 내 문의내역.png" alt="내 문의내역" width="300" height="150">
